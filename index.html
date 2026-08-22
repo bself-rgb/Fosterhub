@@ -1339,7 +1339,35 @@ function filterDogs(){
 
 }
 
+/* DOG DETAILS */
 
+async function viewDog(id){
+
+  const dog = allDogs.find(d => d.id === id);
+
+  if(!dog){
+    alert("Dog record could not be found.");
+    return;
+  }
+
+  alert(
+    "🐶 " + dog.name +
+    "\n\n" +
+    "Breed: " + (dog.breed || "Not entered") +
+    "\n" +
+    "Age: " + (dog.approximate_age || "Not entered") +
+    "\n" +
+    "Sex: " + (dog.sex || "Not entered") +
+    "\n" +
+    "Status: " + (dog.status || "Not entered") +
+    "\n" +
+    "Intake: " + (dog.intake_date || "Not entered") +
+    "\n\n" +
+    "Notes:\n" +
+    (dog.notes || "No notes.")
+  );
+
+}
 /* FOSTERS */
 
 async function loadFosters(){
