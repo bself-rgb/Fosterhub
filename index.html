@@ -1288,11 +1288,17 @@ function renderDogs(dogs){
       <tr>
 
         <td>
-          <strong>${escapeHtml(d.name)}</strong>
-          <div style="font-size:11px;color:#6d7888">
-            SL-${d.dog_number || ""}
-          </div>
-        </td>
+  <strong
+    style="color:var(--blue);cursor:pointer"
+    onclick="viewDog('${d.id}')"
+  >
+    ${escapeHtml(d.name)}
+  </strong>
+
+  <div style="font-size:11px;color:#6d7888">
+    SL-${d.dog_number || ""}
+  </div>
+</td>
 
         <td>
           ${escapeHtml(d.breed || "Not entered")}
