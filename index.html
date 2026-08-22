@@ -3,12 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>Second Leash Hub</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 
 <style>
+
 :root{
   --blue:#0d8fc4;
   --blue2:#0875a5;
@@ -22,7 +24,9 @@
   --good:#2e8b62;
 }
 
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
 body{
   margin:0;
@@ -31,7 +35,9 @@ body{
   color:var(--text);
 }
 
-/* LOGIN */
+/* =========================
+   LOGIN
+========================= */
 
 #loginScreen{
   min-height:100vh;
@@ -84,12 +90,15 @@ body{
   margin-bottom:6px;
 }
 
-.form-group input{
+.form-group input,
+.form-group select,
+.form-group textarea{
   width:100%;
   padding:12px;
   border:1px solid var(--line);
   border-radius:9px;
   font-size:14px;
+  font-family:inherit;
 }
 
 .login-btn{
@@ -119,7 +128,9 @@ body{
   font-size:13px;
 }
 
-/* APP */
+/* =========================
+   APPLICATION
+========================= */
 
 #app{
   display:none;
@@ -130,6 +141,10 @@ body{
   min-height:100vh;
 }
 
+/* =========================
+   SIDEBAR
+========================= */
+
 .side{
   width:250px;
   background:var(--navy);
@@ -137,6 +152,7 @@ body{
   padding:20px 14px;
   position:fixed;
   inset:0 auto 0 0;
+  overflow-y:auto;
 }
 
 .brand{
@@ -192,6 +208,10 @@ body{
   margin:18px 12px 6px;
 }
 
+/* =========================
+   MAIN
+========================= */
+
 .main{
   margin-left:250px;
   width:calc(100% - 250px);
@@ -228,6 +248,7 @@ body{
   padding:10px 14px;
   cursor:pointer;
   font-weight:700;
+  font-family:inherit;
 }
 
 .primary{
@@ -235,11 +256,23 @@ body{
   color:#fff;
 }
 
+.primary:hover{
+  background:var(--blue2);
+}
+
 .secondary{
   background:#fff;
   border:1px solid var(--line);
   color:var(--text);
 }
+
+.secondary:hover{
+  background:#f5f7f9;
+}
+
+/* =========================
+   DASHBOARD
+========================= */
 
 .cards{
   display:grid;
@@ -298,6 +331,7 @@ body{
 }
 
 .pill{
+  display:inline-block;
   font-size:11px;
   padding:5px 8px;
   border-radius:999px;
@@ -314,6 +348,10 @@ body{
   color:#086b96;
 }
 
+/* =========================
+   PAGES
+========================= */
+
 .section-page{
   display:none;
 }
@@ -321,6 +359,10 @@ body{
 .section-page.active{
   display:block;
 }
+
+/* =========================
+   TOOLBAR
+========================= */
 
 .toolbar{
   display:flex;
@@ -334,7 +376,12 @@ body{
   border-radius:9px;
   padding:11px 12px;
   background:#fff;
+  font-family:inherit;
 }
+
+/* =========================
+   TABLES
+========================= */
 
 .table{
   width:100%;
@@ -356,16 +403,25 @@ body{
   color:var(--muted);
 }
 
+.table tbody tr:hover{
+  background:#fafcfd;
+}
+
 .empty{
   padding:30px;
   text-align:center;
   color:var(--muted);
 }
 
+/* =========================
+   USER
+========================= */
+
 .user-box{
   display:flex;
   align-items:center;
   gap:10px;
+  padding:0 10px 14px;
 }
 
 .user-avatar{
@@ -392,6 +448,10 @@ body{
   color:#8ea0b7;
 }
 
+/* =========================
+   LOGOUT
+========================= */
+
 .logout{
   margin-top:20px;
   border-top:1px solid #ffffff18;
@@ -411,6 +471,62 @@ body{
 .logout button:hover{
   background:#233957;
 }
+
+/* =========================
+   DOG PROFILE
+========================= */
+
+.profile-header{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-bottom:20px;
+}
+
+.profile-icon{
+  width:70px;
+  height:70px;
+  border-radius:16px;
+  background:#e6f5fb;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:34px;
+}
+
+.profile-title{
+  font-size:24px;
+  margin:0 0 5px;
+}
+
+.profile-number{
+  font-size:12px;
+  color:var(--muted);
+}
+
+.profile-status{
+  margin-left:auto;
+}
+
+.profile-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+
+/* =========================
+   FORM
+========================= */
+
+.dog-form-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
 
 @media(max-width:900px){
 
@@ -435,9 +551,18 @@ body{
     width:46px;
   }
 
+  .user-box{
+    justify-content:center;
+    padding:10px 0;
+  }
+
   .nav button{
     text-align:center;
     font-size:0;
+  }
+
+  .nav button:first-letter{
+    font-size:18px;
   }
 
   .main{
@@ -453,49 +578,131 @@ body{
   .grid2{
     grid-template-columns:1fr;
   }
+
+  .profile-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
 }
+
+@media(max-width:600px){
+
+  .top{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:12px;
+  }
+
+  .actions{
+    width:100%;
+  }
+
+  .actions button{
+    flex:1;
+  }
+
+  .cards{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .dog-form-grid{
+    grid-template-columns:1fr;
+  }
+
+  .profile-grid{
+    grid-template-columns:1fr;
+  }
+
+  .profile-header{
+    flex-wrap:wrap;
+  }
+
+  .profile-status{
+    margin-left:0;
+  }
+
+  .table{
+    min-width:650px;
+  }
+
+  .panel{
+    overflow-x:auto;
+  }
+
+}
+
+/* =========================
+   LOADING
+========================= */
+
+.loading{
+  opacity:.6;
+  pointer-events:none;
+}
+
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
+
+<!-- =========================================================
+     LOGIN
+========================================================= -->
 
 <div id="loginScreen">
 
   <div class="login-card">
 
-    <img src="assets/logo.png" alt="Second Leash">
+    <img
+      src="assets/logo.png"
+      alt="Second Leash"
+    >
 
     <h1>Second Leash Hub</h1>
 
-    <p>Secure operations & case management</p>
+    <p>
+      Secure operations & case management
+    </p>
 
     <div id="loginError"></div>
 
     <form id="loginForm">
 
       <div class="form-group">
-        <label>Email</label>
+
+        <label for="email">
+          Email
+        </label>
+
         <input
           id="email"
           type="email"
           autocomplete="email"
           required
         >
+
       </div>
 
       <div class="form-group">
-        <label>Password</label>
+
+        <label for="password">
+          Password
+        </label>
+
         <input
           id="password"
           type="password"
           autocomplete="current-password"
           required
         >
+
       </div>
 
-      <button class="login-btn" type="submit">
+      <button
+        class="login-btn"
+        type="submit"
+      >
         Sign In
       </button>
 
@@ -506,292 +713,554 @@ body{
 </div>
 
 
-<!-- APPLICATION -->
+<!-- =========================================================
+     APPLICATION
+========================================================= -->
 
 <div id="app">
 
 <div class="app">
 
+
+<!-- =========================================================
+     SIDEBAR
+========================================================= -->
+
 <aside class="side">
 
-<div class="brand">
+  <div class="brand">
 
-<img src="assets/logo.png">
+    <img
+      src="assets/logo.png"
+      alt="Second Leash"
+    >
 
-<div>
-<strong>Second Leash</strong>
-<span>Hub • Operations</span>
-</div>
+    <div>
 
-</div>
+      <strong>
+        Second Leash
+      </strong>
 
-<div class="user-box">
+      <span>
+        Hub • Operations
+      </span>
 
-<div class="user-avatar" id="userAvatar">B</div>
+    </div>
 
-<div class="user-info">
-<strong id="userName">User</strong>
-<span id="userRole">Loading...</span>
-</div>
+  </div>
 
-</div>
 
-<nav class="nav">
+  <div class="user-box">
 
-<div class="section">Main</div>
+    <div
+      class="user-avatar"
+      id="userAvatar"
+    >
+      B
+    </div>
 
-<button class="active" data-page="dashboard">
-🏠 <span>Dashboard</span>
-</button>
+    <div class="user-info">
 
-<button data-page="dogs">
-🐶 <span>Dogs</span>
-</button>
+      <strong id="userName">
+        User
+      </strong>
 
-<button data-page="fosters">
-🏡 <span>Fosters</span>
-</button>
+      <span id="userRole">
+        Loading...
+      </span>
 
-<button data-page="owners">
-👤 <span>Owners</span>
-</button>
+    </div>
 
-<button data-page="placements">
-🔄 <span>Placements</span>
-</button>
+  </div>
 
-<div class="section">Care</div>
 
-<button data-page="checkins">
-📋 <span>Foster Check-ins</span>
-</button>
+  <nav class="nav">
 
-<button data-page="medical">
-💊 <span>Medical</span>
-</button>
+    <div class="section">
+      Main
+    </div>
 
-<button data-page="expenses">
-💰 <span>Expenses</span>
-</button>
+    <button
+      class="active"
+      data-page="dashboard"
+    >
+      🏠 <span>Dashboard</span>
+    </button>
 
-<button data-page="documents">
-📁 <span>Documents</span>
-</button>
+    <button data-page="dogs">
+      🐶 <span>Dogs</span>
+    </button>
 
-<div class="section">Community</div>
+    <button data-page="fosters">
+      🏡 <span>Fosters</span>
+    </button>
 
-<button data-page="volunteers">
-🙋 <span>Volunteers</span>
-</button>
+    <button data-page="owners">
+      👤 <span>Owners</span>
+    </button>
 
-<button data-page="needs">
-📢 <span>Volunteer Needs</span>
-</button>
+    <button data-page="placements">
+      🔄 <span>Placements</span>
+    </button>
 
-<div class="section">Admin</div>
 
-<button data-page="reports">
-📊 <span>Reports</span>
-</button>
+    <div class="section">
+      Care
+    </div>
 
-<button data-page="users">
-⚙️ <span>Users & Permissions</span>
-</button>
+    <button data-page="checkins">
+      📋 <span>Foster Check-ins</span>
+    </button>
 
-</nav>
+    <button data-page="medical">
+      💊 <span>Medical</span>
+    </button>
 
-<div class="logout">
-<button onclick="logout()">Sign Out</button>
-</div>
+    <button data-page="expenses">
+      💰 <span>Expenses</span>
+    </button>
+
+    <button data-page="documents">
+      📁 <span>Documents</span>
+    </button>
+
+
+    <div class="section">
+      Community
+    </div>
+
+    <button data-page="volunteers">
+      🙋 <span>Volunteers</span>
+    </button>
+
+    <button data-page="needs">
+      📢 <span>Volunteer Needs</span>
+    </button>
+
+
+    <div class="section">
+      Admin
+    </div>
+
+    <button data-page="reports">
+      📊 <span>Reports</span>
+    </button>
+
+    <button data-page="users">
+      ⚙️ <span>Users & Permissions</span>
+    </button>
+
+  </nav>
+
+
+  <div class="logout">
+
+    <button onclick="logout()">
+      Sign Out
+    </button>
+
+  </div>
 
 </aside>
 
 
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
 <main class="main">
 
-<div class="top">
 
-<div>
+  <div class="top">
 
-<h1 id="title">
-Second Leash Hub
-</h1>
+    <div>
 
-<p id="subtitle">
-Temporary care, stability, reunification.
-</p>
+      <h1 id="title">
+        Second Leash Hub
+      </h1>
 
-</div>
+      <p id="subtitle">
+        Temporary care, stability, reunification.
+      </p>
 
-<div class="actions">
+    </div>
 
-<button class="btn secondary" onclick="loadDashboard()">
-↻ Refresh
-</button>
+    <div class="actions">
 
-<button class="btn primary" onclick="showPage('dogs')">
-+ Add Dog
-</button>
+      <button
+        class="btn secondary"
+        onclick="loadDashboard()"
+      >
+        ↻ Refresh
+      </button>
 
-</div>
+      <button
+        class="btn primary"
+        onclick="openDogForm()"
+      >
+        + Add Dog
+      </button>
 
-</div>
+    </div>
 
-
-<!-- DASHBOARD -->
-
-<section id="dashboard" class="section-page active">
-
-<div class="cards">
-
-<div class="card">
-<div class="metric" id="mDogs">0</div>
-<div class="label">Dogs</div>
-</div>
-
-<div class="card">
-<div class="metric" id="mFosters">0</div>
-<div class="label">Fosters</div>
-</div>
-
-<div class="card">
-<div class="metric" id="mPlacements">0</div>
-<div class="label">Active Placements</div>
-</div>
-
-<div class="card">
-<div class="metric" id="mExpenses">$0</div>
-<div class="label">Tracked Expenses</div>
-</div>
-
-</div>
+  </div>
 
 
-<div class="grid2">
+<!-- =========================================================
+     DASHBOARD
+========================================================= -->
 
-<div class="panel">
+<section
+  id="dashboard"
+  class="section-page active"
+>
 
-<h2>🐾 Second Leash Operations</h2>
+  <div class="cards">
 
-<div class="row">
-<span>Dogs currently in the system</span>
-<strong id="dashDogs">0</strong>
-</div>
+    <div class="card">
 
-<div class="row">
-<span>Foster homes</span>
-<strong id="dashFosters">0</strong>
-</div>
+      <div
+        class="metric"
+        id="mDogs"
+      >
+        0
+      </div>
 
-<div class="row">
-<span>Active placements</span>
-<strong id="dashPlacements">0</strong>
-</div>
+      <div class="label">
+        Dogs
+      </div>
 
-</div>
+    </div>
 
 
-<div class="panel">
+    <div class="card">
 
-<h2>👑 Your Access</h2>
+      <div
+        class="metric"
+        id="mFosters"
+      >
+        0
+      </div>
 
-<div class="row">
-<span>Account</span>
-<strong id="dashEmail"></strong>
-</div>
+      <div class="label">
+        Fosters
+      </div>
 
-<div class="row">
-<span>Role</span>
-<span class="pill blue" id="dashRole">
-SUPER ADMIN
-</span>
-</div>
+    </div>
 
-<div class="row">
-<span>Status</span>
-<span class="pill green">
-ACTIVE
-</span>
-</div>
 
-</div>
+    <div class="card">
 
-</div>
+      <div
+        class="metric"
+        id="mPlacements"
+      >
+        0
+      </div>
+
+      <div class="label">
+        Active Placements
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <div
+        class="metric"
+        id="mExpenses"
+      >
+        $0
+      </div>
+
+      <div class="label">
+        Tracked Expenses
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="grid2">
+
+    <div class="panel">
+
+      <h2>
+        🐾 Second Leash Operations
+      </h2>
+
+      <div class="row">
+
+        <span>
+          Dogs currently in the system
+        </span>
+
+        <strong id="dashDogs">
+          0
+        </strong>
+
+      </div>
+
+      <div class="row">
+
+        <span>
+          Foster homes
+        </span>
+
+        <strong id="dashFosters">
+          0
+        </strong>
+
+      </div>
+
+      <div class="row">
+
+        <span>
+          Active placements
+        </span>
+
+        <strong id="dashPlacements">
+          0
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="panel">
+
+      <h2>
+        👑 Your Access
+      </h2>
+
+      <div class="row">
+
+        <span>
+          Account
+        </span>
+
+        <strong id="dashEmail">
+        </strong>
+
+      </div>
+
+      <div class="row">
+
+        <span>
+          Role
+        </span>
+
+        <span
+          class="pill blue"
+          id="dashRole"
+        >
+          SUPER ADMIN
+        </span>
+
+      </div>
+
+      <div class="row">
+
+        <span>
+          Status
+        </span>
+
+        <span class="pill green">
+          ACTIVE
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
 
 </section>
 
 
-<!-- DOGS -->
+<!-- =========================================================
+     DOGS
+========================================================= -->
 
-<section id="dogs" class="section-page">
-  <div id="dogForm" class="panel" style="display:none;margin-bottom:16px;">
+<section
+  id="dogs"
+  class="section-page"
+>
 
-  <h2>🐶 Add New Dog</h2>
 
-  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;">
+<!-- DOG FORM -->
+
+<div
+  id="dogForm"
+  class="panel"
+  style="display:none;margin-bottom:16px;"
+>
+
+  <h2>
+    🐶 Add New Dog
+  </h2>
+
+
+  <div class="dog-form-grid">
+
 
     <div class="form-group">
-      <label>Dog Name</label>
-      <input id="dogName" class="search" placeholder="Dog's name">
+
+      <label for="dogName">
+        Dog Name
+      </label>
+
+      <input
+        id="dogName"
+        placeholder="Dog's name"
+      >
+
     </div>
 
-    <div class="form-group">
-      <label>Breed / Description</label>
-      <input id="dogBreed" class="search" placeholder="Breed or mix">
-    </div>
 
     <div class="form-group">
-      <label>Approximate Age</label>
-      <input id="dogAge" class="search" placeholder="Example: 3 years">
+
+      <label for="dogBreed">
+        Breed / Description
+      </label>
+
+      <input
+        id="dogBreed"
+        placeholder="Breed or mix"
+      >
+
     </div>
 
+
     <div class="form-group">
-      <label>Sex</label>
-      <select id="dogSex" class="search">
-        <option value="">Select...</option>
-        <option value="male">Male</option>
-        <option value="female">Female</option>
-        <option value="unknown">Unknown</option>
+
+      <label for="dogAge">
+        Approximate Age
+      </label>
+
+      <input
+        id="dogAge"
+        placeholder="Example: 3 years"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="dogSex">
+        Sex
+      </label>
+
+      <select id="dogSex">
+
+        <option value="">
+          Select...
+        </option>
+
+        <option value="male">
+          Male
+        </option>
+
+        <option value="female">
+          Female
+        </option>
+
+        <option value="unknown">
+          Unknown
+        </option>
+
       </select>
+
     </div>
 
-    <div class="form-group">
-      <label>Intake Date</label>
-      <input id="dogIntakeDate" type="date" class="search">
-    </div>
 
     <div class="form-group">
-      <label>Status</label>
-      <select id="dogStatus" class="search">
-        <option value="intake">Intake</option>
-        <option value="available">Available</option>
-        <option value="fostered">Fostered</option>
-        <option value="reunification">Reunification</option>
-        <option value="returned">Returned</option>
-        <option value="closed">Closed</option>
+
+      <label for="dogIntakeDate">
+        Intake Date
+      </label>
+
+      <input
+        id="dogIntakeDate"
+        type="date"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="dogStatus">
+        Status
+      </label>
+
+      <select id="dogStatus">
+
+        <option value="intake">
+          Intake
+        </option>
+
+        <option value="available">
+          Available
+        </option>
+
+        <option value="fostered">
+          Fostered
+        </option>
+
+        <option value="reunification">
+          Reunification
+        </option>
+
+        <option value="returned">
+          Returned
+        </option>
+
+        <option value="closed">
+          Closed
+        </option>
+
       </select>
+
     </div>
+
 
   </div>
 
+
   <div class="form-group">
-    <label>Notes</label>
+
+    <label for="dogNotes">
+      Notes
+    </label>
+
     <textarea
       id="dogNotes"
-      class="search"
       rows="4"
       placeholder="Important information about this dog..."
       style="width:100%;resize:vertical;"
     ></textarea>
+
   </div>
+
 
   <div style="display:flex;gap:10px;">
 
-    <button class="btn primary" onclick="saveDog()">
+    <button
+      class="btn primary"
+      onclick="saveDog()"
+    >
       Save Dog
     </button>
 
-    <button class="btn secondary" onclick="closeDogForm()">
+    <button
+      class="btn secondary"
+      onclick="closeDogForm()"
+    >
       Cancel
     </button>
 
@@ -799,23 +1268,29 @@ ACTIVE
 
 </div>
 
+
+<!-- DOG SEARCH -->
+
 <div class="toolbar">
 
-<input
-class="search"
-id="dogSearch"
-placeholder="Search dogs..."
-oninput="filterDogs()"
->
+  <input
+    class="search"
+    id="dogSearch"
+    placeholder="Search dogs..."
+    oninput="filterDogs()"
+  >
 
-<button
-class="btn primary"
-onclick="openDogForm()"
->
-+ Add Dog
-</button>
+  <button
+    class="btn primary"
+    onclick="openDogForm()"
+  >
+    + Add Dog
+  </button>
 
 </div>
+
+
+<!-- DOG TABLE -->
 
 <div class="panel">
 
@@ -824,20 +1299,39 @@ onclick="openDogForm()"
 <thead>
 
 <tr>
-<th>Dog</th>
-<th>Breed</th>
-<th>Status</th>
-<th>Intake</th>
+
+<th>
+  Dog
+</th>
+
+<th>
+  Breed
+</th>
+
+<th>
+  Status
+</th>
+
+<th>
+  Intake
+</th>
+
 </tr>
 
 </thead>
 
+
 <tbody id="dogsBody">
 
 <tr>
-<td colspan="4" class="empty">
-Loading dogs...
+
+<td
+  colspan="4"
+  class="empty"
+>
+  Loading dogs...
 </td>
+
 </tr>
 
 </tbody>
@@ -848,115 +1342,169 @@ Loading dogs...
 
 </section>
 
-<!-- DOG PROFILE -->
 
-<section id="dogProfile" class="section-page">
+<!-- =========================================================
+     DOG PROFILE
+========================================================= -->
+
+<section
+  id="dogProfile"
+  class="section-page"
+>
 
   <div class="toolbar">
 
-    <button class="btn secondary" onclick="showPage('dogs')">
+    <button
+      class="btn secondary"
+      onclick="showPage('dogs')"
+    >
       ← Back to Dogs
     </button>
 
-    <button class="btn primary" onclick="editCurrentDog()">
+    <button
+      class="btn primary"
+      onclick="editCurrentDog()"
+    >
       ✏️ Edit Dog
     </button>
 
   </div>
 
+
   <div class="panel">
 
-    <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+    <div class="profile-header">
 
-      <div
-        style="
-          width:70px;
-          height:70px;
-          border-radius:16px;
-          background:#e6f5fb;
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          font-size:34px;
-        "
-      >
+      <div class="profile-icon">
         🐶
       </div>
 
       <div>
+
         <h2
           id="profileDogName"
-          style="font-size:24px;margin:0 0 5px;"
+          class="profile-title"
         >
           Dog
         </h2>
 
         <div
           id="profileDogNumber"
-          style="font-size:12px;color:var(--muted);"
+          class="profile-number"
         >
           Second Leash ID
         </div>
+
       </div>
 
-      <div style="margin-left:auto;">
+      <div class="profile-status">
+
         <span
           class="pill blue"
           id="profileDogStatus"
         >
           INTAKE
         </span>
+
       </div>
 
     </div>
 
-    <div
-      style="
-        display:grid;
-        grid-template-columns:repeat(3,1fr);
-        gap:14px;
-      "
-    >
+
+    <div class="profile-grid">
+
 
       <div class="card">
-        <div class="label">Breed / Description</div>
-        <strong id="profileDogBreed">—</strong>
+
+        <div class="label">
+          Breed / Description
+        </div>
+
+        <strong id="profileDogBreed">
+          —
+        </strong>
+
       </div>
 
-      <div class="card">
-        <div class="label">Approximate Age</div>
-        <strong id="profileDogAge">—</strong>
-      </div>
 
       <div class="card">
-        <div class="label">Sex</div>
-        <strong id="profileDogSex">—</strong>
+
+        <div class="label">
+          Approximate Age
+        </div>
+
+        <strong id="profileDogAge">
+          —
+        </strong>
+
       </div>
 
-      <div class="card">
-        <div class="label">Intake Date</div>
-        <strong id="profileDogIntake">—</strong>
-      </div>
 
       <div class="card">
-        <div class="label">Current Placement</div>
-        <strong id="profileDogPlacement">Not placed</strong>
+
+        <div class="label">
+          Sex
+        </div>
+
+        <strong id="profileDogSex">
+          —
+        </strong>
+
       </div>
 
+
       <div class="card">
-        <div class="label">Record Created</div>
-        <strong id="profileDogCreated">—</strong>
+
+        <div class="label">
+          Intake Date
+        </div>
+
+        <strong id="profileDogIntake">
+          —
+        </strong>
+
       </div>
+
+
+      <div class="card">
+
+        <div class="label">
+          Current Placement
+        </div>
+
+        <strong id="profileDogPlacement">
+          Not placed
+        </strong>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="label">
+          Record Created
+        </div>
+
+        <strong id="profileDogCreated">
+          —
+        </strong>
+
+      </div>
+
 
     </div>
 
   </div>
 
+
   <div class="grid2">
+
 
     <div class="panel">
 
-      <h2>📝 Case Notes</h2>
+      <h2>
+        📝 Case Notes
+      </h2>
 
       <div
         id="profileDogNotes"
@@ -971,48 +1519,97 @@ Loading dogs...
 
     </div>
 
+
     <div class="panel">
 
-      <h2>📋 Case Overview</h2>
+      <h2>
+        📋 Case Overview
+      </h2>
+
 
       <div class="row">
-        <span>Current Status</span>
-        <strong id="profileOverviewStatus">—</strong>
+
+        <span>
+          Current Status
+        </span>
+
+        <strong id="profileOverviewStatus">
+          —
+        </strong>
+
       </div>
 
-      <div class="row">
-        <span>Foster Placement</span>
-        <strong id="profileOverviewFoster">None</strong>
-      </div>
 
       <div class="row">
-        <span>Expected Return</span>
-        <strong id="profileOverviewReturn">—</strong>
+
+        <span>
+          Foster Placement
+        </span>
+
+        <strong id="profileOverviewFoster">
+          None
+        </strong>
+
       </div>
+
+
+      <div class="row">
+
+        <span>
+          Expected Return
+        </span>
+
+        <strong id="profileOverviewReturn">
+          —
+        </strong>
+
+      </div>
+
 
     </div>
 
   </div>
 
 </section>
-  
-<!-- FOSTERS -->
 
-<section id="fosters" class="section-page">
+
+<!-- =========================================================
+     FOSTERS
+========================================================= -->
+
+<section
+  id="fosters"
+  class="section-page"
+>
 
 <div class="panel">
 
-<h2>🏡 Foster Homes</h2>
+<h2>
+  🏡 Foster Homes
+</h2>
 
 <table class="table">
 
 <thead>
 
 <tr>
-<th>Foster</th>
-<th>City</th>
-<th>Availability</th>
-<th>Capacity</th>
+
+<th>
+  Foster
+</th>
+
+<th>
+  City
+</th>
+
+<th>
+  Availability
+</th>
+
+<th>
+  Capacity
+</th>
+
 </tr>
 
 </thead>
@@ -1020,9 +1617,14 @@ Loading dogs...
 <tbody id="fostersBody">
 
 <tr>
-<td colspan="4" class="empty">
-Loading fosters...
+
+<td
+  colspan="4"
+  class="empty"
+>
+  Loading fosters...
 </td>
+
 </tr>
 
 </tbody>
@@ -1034,14 +1636,23 @@ Loading fosters...
 </section>
 
 
-<section id="owners" class="section-page">
+<!-- =========================================================
+     OWNERS
+========================================================= -->
+
+<section
+  id="owners"
+  class="section-page"
+>
 
 <div class="panel">
 
-<h2>👤 Owners & Reunification</h2>
+<h2>
+  👤 Owners & Reunification
+</h2>
 
 <p class="empty">
-Owner records will be connected next.
+  Owner records will be connected next.
 </p>
 
 </div>
@@ -1049,22 +1660,47 @@ Owner records will be connected next.
 </section>
 
 
-<section id="placements" class="section-page">
+<!-- =========================================================
+     PLACEMENTS
+========================================================= -->
+
+<section
+  id="placements"
+  class="section-page"
+>
 
 <div class="panel">
 
-<h2>🔄 Placements</h2>
+<h2>
+  🔄 Placements
+</h2>
 
 <table class="table">
 
 <thead>
 
 <tr>
-<th>Dog</th>
-<th>Foster</th>
-<th>Start</th>
-<th>Expected End</th>
-<th>Status</th>
+
+<th>
+  Dog
+</th>
+
+<th>
+  Foster
+</th>
+
+<th>
+  Start
+</th>
+
+<th>
+  Expected End
+</th>
+
+<th>
+  Status
+</th>
+
 </tr>
 
 </thead>
@@ -1072,9 +1708,14 @@ Owner records will be connected next.
 <tbody id="placementsBody">
 
 <tr>
-<td colspan="5" class="empty">
-Loading placements...
+
+<td
+  colspan="5"
+  class="empty"
+>
+  Loading placements...
 </td>
+
 </tr>
 
 </tbody>
@@ -1086,14 +1727,23 @@ Loading placements...
 </section>
 
 
-<section id="checkins" class="section-page">
+<!-- =========================================================
+     CHECKINS
+========================================================= -->
+
+<section
+  id="checkins"
+  class="section-page"
+>
 
 <div class="panel">
 
-<h2>📋 Foster Check-ins</h2>
+<h2>
+  📋 Foster Check-ins
+</h2>
 
 <p class="empty">
-Foster check-in records will appear here.
+  Foster check-in records will appear here.
 </p>
 
 </div>
@@ -1101,14 +1751,24 @@ Foster check-in records will appear here.
 </section>
 
 
-<section id="medical" class="section-page">
+<!-- =========================================================
+     MEDICAL
+========================================================= -->
+
+<section
+  id="medical"
+  class="section-page"
+>
 
 <div class="panel">
 
-<h2>💊 Medical</h2>
+<h2>
+  💊 Medical
+</h2>
 
 <p class="empty">
-Vaccinations, medications and veterinary records will be connected next.
+  Vaccinations, medications and veterinary records
+  will be connected next.
 </p>
 
 </div>
@@ -1116,14 +1776,23 @@ Vaccinations, medications and veterinary records will be connected next.
 </section>
 
 
-<section id="expenses" class="section-page">
+<!-- =========================================================
+     EXPENSES
+========================================================= -->
+
+<section
+  id="expenses"
+  class="section-page"
+>
 
 <div class="panel">
 
-<h2>💰 Expenses</h2>
+<h2>
+  💰 Expenses
+</h2>
 
 <p class="empty">
-Expense tracking will be connected next.
+  Expense tracking will be connected next.
 </p>
 
 </div>
@@ -1131,14 +1800,23 @@ Expense tracking will be connected next.
 </section>
 
 
-<section id="documents" class="section-page">
+<!-- =========================================================
+     DOCUMENTS
+========================================================= -->
+
+<section
+  id="documents"
+  class="section-page"
+>
 
 <div class="panel">
 
-<h2>📁 Documents</h2>
+<h2>
+  📁 Documents
+</h2>
 
 <p class="empty">
-Documents and case files will be connected next.
+  Documents and case files will be connected next.
 </p>
 
 </div>
@@ -1146,14 +1824,23 @@ Documents and case files will be connected next.
 </section>
 
 
-<section id="volunteers" class="section-page">
+<!-- =========================================================
+     VOLUNTEERS
+========================================================= -->
+
+<section
+  id="volunteers"
+  class="section-page"
+>
 
 <div class="panel">
 
-<h2>🙋 Volunteers</h2>
+<h2>
+  🙋 Volunteers
+</h2>
 
 <p class="empty">
-Volunteer management will be connected next.
+  Volunteer management will be connected next.
 </p>
 
 </div>
@@ -1161,14 +1848,23 @@ Volunteer management will be connected next.
 </section>
 
 
-<section id="needs" class="section-page">
+<!-- =========================================================
+     VOLUNTEER NEEDS
+========================================================= -->
+
+<section
+  id="needs"
+  class="section-page"
+>
 
 <div class="panel">
 
-<h2>📢 Volunteer Needs</h2>
+<h2>
+  📢 Volunteer Needs
+</h2>
 
 <p class="empty">
-Volunteer opportunities will be connected next.
+  Volunteer opportunities will be connected next.
 </p>
 
 </div>
@@ -1176,14 +1872,24 @@ Volunteer opportunities will be connected next.
 </section>
 
 
-<section id="reports" class="section-page">
+<!-- =========================================================
+     REPORTS
+========================================================= -->
+
+<section
+  id="reports"
+  class="section-page"
+>
 
 <div class="panel">
 
-<h2>📊 Reports</h2>
+<h2>
+  📊 Reports
+</h2>
 
 <p class="empty">
-Reporting will be connected after the operational modules are complete.
+  Reporting will be connected after the operational
+  modules are complete.
 </p>
 
 </div>
@@ -1191,14 +1897,23 @@ Reporting will be connected after the operational modules are complete.
 </section>
 
 
-<section id="users" class="section-page">
+<!-- =========================================================
+     USERS
+========================================================= -->
+
+<section
+  id="users"
+  class="section-page"
+>
 
 <div class="panel">
 
-<h2>⚙️ Users & Permissions</h2>
+<h2>
+  ⚙️ Users & Permissions
+</h2>
 
 <p class="empty">
-User management will be connected next.
+  User management will be connected next.
 </p>
 
 </div>
@@ -1213,153 +1928,248 @@ User management will be connected next.
 </div>
 
 
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
 <script>
+
+/* =========================================================
+   SUPABASE
+========================================================= */
 
 const client = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_PUBLISHABLE_KEY
 );
 
+
 let currentUser = null;
 let currentProfile = null;
 let allDogs = [];
+let currentDog = null;
+let editingDogId = null;
 
 
-/* LOGIN */
+/* =========================================================
+   LOGIN
+========================================================= */
 
 document
-.getElementById("loginForm")
-.addEventListener("submit", async function(e){
+  .getElementById("loginForm")
+  .addEventListener("submit", async function(e){
 
-  e.preventDefault();
+    e.preventDefault();
 
-  const errorBox = document.getElementById("loginError");
+    const errorBox =
+      document.getElementById("loginError");
 
-  errorBox.style.display = "none";
+    errorBox.style.display = "none";
 
-  const email =
-    document.getElementById("email").value.trim();
+    const email =
+      document
+        .getElementById("email")
+        .value
+        .trim();
 
-  const password =
-    document.getElementById("password").value;
+    const password =
+      document
+        .getElementById("password")
+        .value;
 
-  const { data, error } =
-    await client.auth.signInWithPassword({
+
+    const {
+      data,
+      error
+    } = await client.auth.signInWithPassword({
       email,
       password
     });
 
-  if(error){
 
-    errorBox.textContent = error.message;
+    if(error){
 
-    errorBox.style.display = "block";
+      errorBox.textContent =
+        error.message;
 
-    return;
-  }
+      errorBox.style.display =
+        "block";
 
-  await startApp(data.user);
+      return;
+    }
 
-});
+
+    await startApp(data.user);
+
+  });
 
 
-/* START APP */
+/* =========================================================
+   START APP
+========================================================= */
 
 async function startApp(user){
 
+  if(!user){
+    return;
+  }
+
+
   currentUser = user;
 
-  const { data: profile, error } =
-    await client
-      .from("profiles")
-      .select("*")
-      .eq("id", user.id)
-      .single();
+
+  const {
+    data: profile,
+    error
+  } = await client
+    .from("profiles")
+    .select("*")
+    .eq("id", user.id)
+    .single();
+
 
   if(error){
 
-    document.getElementById("loginError").textContent =
+    console.error(error);
+
+    const errorBox =
+      document.getElementById("loginError");
+
+    errorBox.textContent =
       "Your account is authenticated, but your Second Leash profile could not be loaded.";
 
-    document.getElementById("loginError").style.display = "block";
+    errorBox.style.display =
+      "block";
 
     await client.auth.signOut();
 
     return;
   }
+
 
   currentProfile = profile;
 
+
   if(!profile.active){
 
-    alert("Your Second Leash account is inactive.");
+    alert(
+      "Your Second Leash account is inactive."
+    );
 
     await client.auth.signOut();
 
     return;
   }
 
-  document.getElementById("loginScreen").style.display = "none";
 
-  document.getElementById("app").style.display = "block";
+  document
+    .getElementById("loginScreen")
+    .style.display = "none";
+
+
+  document
+    .getElementById("app")
+    .style.display = "block";
+
 
   const firstName =
     profile.first_name ||
     user.email.split("@")[0];
 
-  document.getElementById("userName").textContent =
-    firstName;
 
-  document.getElementById("userRole").textContent =
-    profile.role.replace("_"," ").toUpperCase();
+  document
+    .getElementById("userName")
+    .textContent =
+      firstName;
 
-  document.getElementById("dashEmail").textContent =
-    user.email;
 
-  document.getElementById("dashRole").textContent =
-    profile.role.replace("_"," ").toUpperCase();
+  const role =
+    (profile.role || "user")
+      .replaceAll("_"," ")
+      .toUpperCase();
 
-  document.getElementById("userAvatar").textContent =
-    firstName.charAt(0).toUpperCase();
 
-  document.getElementById("title").textContent =
-    `Good to see you, ${firstName}`;
+  document
+    .getElementById("userRole")
+    .textContent =
+      role;
+
+
+  document
+    .getElementById("dashEmail")
+    .textContent =
+      user.email;
+
+
+  document
+    .getElementById("dashRole")
+    .textContent =
+      role;
+
+
+  document
+    .getElementById("userAvatar")
+    .textContent =
+      firstName
+        .charAt(0)
+        .toUpperCase();
+
+
+  document
+    .getElementById("title")
+    .textContent =
+      `Good to see you, ${firstName}`;
+
 
   await loadDashboard();
 
 }
 
 
-/* SESSION */
+/* =========================================================
+   SESSION CHECK
+========================================================= */
 
 async function checkSession(){
 
-  const { data } =
-    await client.auth.getSession();
+  const {
+    data
+  } = await client.auth.getSession();
 
-  if(data.session){
 
-    await startApp(data.session.user);
+  if(data && data.session){
+
+    await startApp(
+      data.session.user
+    );
 
   }
 
 }
 
+
 checkSession();
 
 
-/* AUTH STATE */
+/* =========================================================
+   AUTH STATE
+========================================================= */
 
 client.auth.onAuthStateChange(
   async (event, session) => {
 
     if(event === "SIGNED_OUT"){
 
-      document.getElementById("app").style.display =
-        "none";
+      currentUser = null;
+      currentProfile = null;
 
-      document.getElementById("loginScreen").style.display =
-        "flex";
+      document
+        .getElementById("app")
+        .style.display = "none";
+
+      document
+        .getElementById("loginScreen")
+        .style.display = "flex";
 
     }
 
@@ -1367,106 +2177,214 @@ client.auth.onAuthStateChange(
 );
 
 
-/* DASHBOARD */
+/* =========================================================
+   DASHBOARD
+========================================================= */
 
 async function loadDashboard(){
 
-  await loadDogs();
+  try{
 
-  await loadFosters();
+    await loadDogs();
 
-  await loadPlacements();
+    await loadFosters();
+
+    await loadPlacements();
+
+  }catch(error){
+
+    console.error(
+      "Dashboard loading error:",
+      error
+    );
+
+  }
 
 }
 
 
-/* DOGS */
+/* =========================================================
+   DOGS
+========================================================= */
 
 async function loadDogs(){
 
-  const { data, error } =
-    await client
-      .from("dogs")
-      .select("*")
-      .order("created_at", {
-        ascending:false
-      });
+  const {
+    data,
+    error
+  } = await client
+    .from("dogs")
+    .select("*")
+    .order("created_at", {
+      ascending:false
+    });
+
 
   if(error){
 
-    console.error(error);
+    console.error(
+      "Dogs error:",
+      error
+    );
+
+    const body =
+      document.getElementById("dogsBody");
+
+    if(body){
+
+      body.innerHTML =
+        `<tr>
+          <td colspan="4" class="empty">
+            Unable to load dogs.
+          </td>
+        </tr>`;
+
+    }
 
     return;
   }
 
-  allDogs = data || [];
 
-  document.getElementById("mDogs").textContent =
-    allDogs.length;
+  allDogs =
+    data || [];
 
-  document.getElementById("dashDogs").textContent =
-    allDogs.length;
+
+  document
+    .getElementById("mDogs")
+    .textContent =
+      allDogs.length;
+
+
+  document
+    .getElementById("dashDogs")
+    .textContent =
+      allDogs.length;
+
 
   renderDogs(allDogs);
 
 }
 
 
+/* =========================================================
+   RENDER DOGS
+========================================================= */
+
 function renderDogs(dogs){
 
   const body =
     document.getElementById("dogsBody");
+
 
   if(!dogs.length){
 
     body.innerHTML =
       `<tr>
         <td colspan="4" class="empty">
-        No dogs have been entered yet.
+          No dogs have been entered yet.
         </td>
       </tr>`;
 
     return;
   }
 
+
   body.innerHTML =
-    dogs.map(d => `
+    dogs.map(d => {
 
-      <tr>
+      const dogId =
+        escapeHtml(d.id);
 
-        <td>
-  <strong
-    style="color:var(--blue);cursor:pointer"
-    onclick="viewDog('${d.id}')"
-  >
-    ${escapeHtml(d.name)}
-  </strong>
 
-  <div style="font-size:11px;color:#6d7888">
-    SL-${d.dog_number || ""}
-  </div>
-</td>
+      const dogName =
+        escapeHtml(
+          d.name || "Unnamed Dog"
+        );
 
-        <td>
-          ${escapeHtml(d.breed || "Not entered")}
-        </td>
 
-        <td>
-          <span class="pill blue">
-            ${escapeHtml(d.status)}
-          </span>
-        </td>
+      const breed =
+        escapeHtml(
+          d.breed || "Not entered"
+        );
 
-        <td>
-          ${d.intake_date || "—"}
-        </td>
 
-      </tr>
+      const status =
+        escapeHtml(
+          (d.status || "unknown")
+            .replaceAll("_"," ")
+        );
 
-    `).join("");
+
+      const intake =
+        escapeHtml(
+          d.intake_date || "—"
+        );
+
+
+      const number =
+        escapeHtml(
+          d.dog_number || ""
+        );
+
+
+      return `
+
+        <tr>
+
+          <td>
+
+            <strong
+              style="
+                color:var(--blue);
+                cursor:pointer;
+              "
+              onclick="viewDog('${dogId}')"
+            >
+              ${dogName}
+            </strong>
+
+            <div
+              style="
+                font-size:11px;
+                color:#6d7888;
+              "
+            >
+              SL-${number}
+            </div>
+
+          </td>
+
+
+          <td>
+            ${breed}
+          </td>
+
+
+          <td>
+
+            <span class="pill blue">
+              ${status.toUpperCase()}
+            </span>
+
+          </td>
+
+
+          <td>
+            ${intake}
+          </td>
+
+        </tr>
+
+      `;
+
+    }).join("");
 
 }
 
+
+/* =========================================================
+   FILTER DOGS
+========================================================= */
 
 function filterDogs(){
 
@@ -1474,239 +2392,187 @@ function filterDogs(){
     document
       .getElementById("dogSearch")
       .value
-      .toLowerCase();
+      .toLowerCase()
+      .trim();
+
 
   renderDogs(
-    allDogs.filter(d =>
-      `${d.name} ${d.breed} ${d.status}`
-      .toLowerCase()
-      .includes(q)
-    )
+
+    allDogs.filter(d => {
+
+      const searchable = `
+
+        ${d.name || ""}
+
+        ${d.breed || ""}
+
+        ${d.status || ""}
+
+        ${d.dog_number || ""}
+
+      `.toLowerCase();
+
+
+      return searchable.includes(q);
+
+    })
+
   );
 
 }
 
-/* DOG DETAILS */
 
-let currentDog = null;
-
-
-/* DOG DETAILS */
+/* =========================================================
+   DOG PROFILE
+========================================================= */
 
 async function viewDog(id){
 
-  const dog = allDogs.find(d => d.id === id);
+  const dog =
+    allDogs.find(
+      d => String(d.id) === String(id)
+    );
+
 
   if(!dog){
 
-    alert("Dog record could not be found.");
+    alert(
+      "Dog record could not be found."
+    );
 
     return;
   }
+
 
   currentDog = dog;
 
-  document.getElementById("profileDogName").textContent =
-    dog.name || "Unnamed Dog";
 
-  document.getElementById("profileDogNumber").textContent =
-    "SL-" + (dog.dog_number || "Not assigned");
+  document
+    .getElementById("profileDogName")
+    .textContent =
+      dog.name || "Unnamed Dog";
 
-  document.getElementById("profileDogStatus").textContent =
-    (dog.status || "unknown").replaceAll("_"," ").toUpperCase();
 
-  document.getElementById("profileDogBreed").textContent =
-    dog.breed || "Not entered";
+  document
+    .getElementById("profileDogNumber")
+    .textContent =
+      "SL-" +
+      (
+        dog.dog_number ||
+        "Not assigned"
+      );
 
-  document.getElementById("profileDogAge").textContent =
-    dog.approximate_age || "Not entered";
 
-  document.getElementById("profileDogSex").textContent =
-    dog.sex || "Not entered";
+  document
+    .getElementById("profileDogStatus")
+    .textContent =
+      (
+        dog.status ||
+        "unknown"
+      )
+      .replaceAll("_"," ")
+      .toUpperCase();
 
-  document.getElementById("profileDogIntake").textContent =
-    dog.intake_date || "Not entered";
 
-  document.getElementById("profileDogCreated").textContent =
-    dog.created_at
-      ? new Date(dog.created_at).toLocaleDateString()
-      : "—";
+  document
+    .getElementById("profileDogBreed")
+    .textContent =
+      dog.breed ||
+      "Not entered";
 
-  document.getElementById("profileDogNotes").textContent =
-    dog.notes || "No notes recorded.";
 
-  document.getElementById("profileOverviewStatus").textContent =
-    dog.status || "—";
+  document
+    .getElementById("profileDogAge")
+    .textContent =
+      dog.approximate_age ||
+      "Not entered";
 
-  document.getElementById("profileOverviewFoster").textContent =
-    "None";
 
-  document.getElementById("profileOverviewReturn").textContent =
-    "—";
+  document
+    .getElementById("profileDogSex")
+    .textContent =
+      dog.sex ||
+      "Not entered";
+
+
+  document
+    .getElementById("profileDogIntake")
+    .textContent =
+      dog.intake_date ||
+      "Not entered";
+
+
+  document
+    .getElementById("profileDogCreated")
+    .textContent =
+      dog.created_at
+        ? new Date(
+            dog.created_at
+          ).toLocaleDateString()
+        : "—";
+
+
+  document
+    .getElementById("profileDogNotes")
+    .textContent =
+      dog.notes ||
+      "No notes recorded.";
+
+
+  document
+    .getElementById("profileOverviewStatus")
+    .textContent =
+      dog.status
+        ? dog.status
+            .replaceAll("_"," ")
+        : "—";
+
+
+  document
+    .getElementById("profileOverviewFoster")
+    .textContent =
+      "None";
+
+
+  document
+    .getElementById("profileOverviewReturn")
+    .textContent =
+      "—";
+
 
   showPage("dogProfile");
-}
-/* FOSTERS */
-
-async function loadFosters(){
-
-  const { data, error } =
-    await client
-      .from("fosters")
-      .select("*");
-
-  if(error){
-
-    console.error(error);
-
-    return;
-  }
-
-  const fosters =
-    data || [];
-
-  document.getElementById("mFosters").textContent =
-    fosters.length;
-
-  document.getElementById("dashFosters").textContent =
-    fosters.length;
-
-  const body =
-    document.getElementById("fostersBody");
-
-  if(!fosters.length){
-
-    body.innerHTML =
-      `<tr>
-        <td colspan="4" class="empty">
-        No foster profiles have been created yet.
-        </td>
-      </tr>`;
-
-    return;
-  }
-
-  body.innerHTML =
-    fosters.map(f => `
-
-      <tr>
-
-        <td>${escapeHtml(f.id)}</td>
-
-        <td>${escapeHtml(f.city || "—")}</td>
-
-        <td>${escapeHtml(f.availability || "—")}</td>
-
-        <td>${f.maximum_dogs || 0}</td>
-
-      </tr>
-
-    `).join("");
 
 }
 
 
-/* PLACEMENTS */
-
-async function loadPlacements(){
-
-  const { data, error } =
-    await client
-      .from("placements")
-      .select(`
-        *,
-        dogs(name)
-      `)
-      .order("start_date", {
-        ascending:false
-      });
-
-  if(error){
-
-    console.error(error);
-
-    return;
-  }
-
-  const placements =
-    data || [];
-
-  document.getElementById("mPlacements").textContent =
-    placements.filter(p =>
-      ["planned","active","extended"]
-      .includes(p.status)
-    ).length;
-
-  document.getElementById("dashPlacements").textContent =
-    placements.filter(p =>
-      ["planned","active","extended"]
-      .includes(p.status)
-    ).length;
-
-  const body =
-    document.getElementById("placementsBody");
-
-  if(!placements.length){
-
-    body.innerHTML =
-      `<tr>
-        <td colspan="5" class="empty">
-        No placements have been entered yet.
-        </td>
-      </tr>`;
-
-    return;
-  }
-
-  body.innerHTML =
-    placements.map(p => `
-
-      <tr>
-
-        <td>
-          ${escapeHtml(
-            p.dogs?.name || "Unknown"
-          )}
-        </td>
-
-        <td>
-          ${escapeHtml(p.foster_id)}
-        </td>
-
-        <td>
-          ${p.start_date || "—"}
-        </td>
-
-        <td>
-          ${p.expected_end_date || "—"}
-        </td>
-
-        <td>
-          <span class="pill green">
-            ${escapeHtml(p.status)}
-          </span>
-        </td>
-
-      </tr>
-
-    `).join("");
-
-}
-
-
-/* DOG FORM */
-
-let editingDogId = null;
+/* =========================================================
+   DOG FORM
+========================================================= */
 
 function openDogForm(){
 
   editingDogId = null;
 
-  document.getElementById("dogForm").style.display = "block";
 
-  document.getElementById("dogName").focus();
+  document
+    .getElementById("dogForm")
+    .style.display =
+      "block";
+
+
+  document
+    .querySelector("#dogForm h2")
+    .textContent =
+      "🐶 Add New Dog";
+
+
+  document
+    .getElementById("dogName")
+    .focus();
+
 
   showPage("dogs");
+
 }
 
 
@@ -1714,115 +2580,219 @@ function closeDogForm(){
 
   editingDogId = null;
 
-  document.getElementById("dogForm").style.display = "none";
 
-  document.getElementById("dogName").value = "";
-  document.getElementById("dogBreed").value = "";
-  document.getElementById("dogAge").value = "";
-  document.getElementById("dogSex").value = "";
-  document.getElementById("dogIntakeDate").value = "";
-  document.getElementById("dogStatus").value = "intake";
-  document.getElementById("dogNotes").value = "";
+  document
+    .getElementById("dogForm")
+    .style.display =
+      "none";
 
-  const heading = document.querySelector("#dogForm h2");
 
-  if(heading){
-    heading.textContent = "🐶 Add New Dog";
-  }
+  document
+    .getElementById("dogName")
+    .value = "";
+
+
+  document
+    .getElementById("dogBreed")
+    .value = "";
+
+
+  document
+    .getElementById("dogAge")
+    .value = "";
+
+
+  document
+    .getElementById("dogSex")
+    .value = "";
+
+
+  document
+    .getElementById("dogIntakeDate")
+    .value = "";
+
+
+  document
+    .getElementById("dogStatus")
+    .value = "intake";
+
+
+  document
+    .getElementById("dogNotes")
+    .value = "";
+
+
+  document
+    .querySelector("#dogForm h2")
+    .textContent =
+      "🐶 Add New Dog";
+
 }
 
+
+/* =========================================================
+   EDIT DOG
+========================================================= */
 
 function editCurrentDog(){
 
   if(!currentDog){
 
-    alert("No dog is currently selected.");
+    alert(
+      "No dog is currently selected."
+    );
 
     return;
   }
 
-  editingDogId = currentDog.id;
 
-  document.getElementById("dogName").value =
-    currentDog.name || "";
+  editingDogId =
+    currentDog.id;
 
-  document.getElementById("dogBreed").value =
-    currentDog.breed || "";
 
-  document.getElementById("dogAge").value =
-    currentDog.approximate_age || "";
+  document
+    .getElementById("dogName")
+    .value =
+      currentDog.name || "";
 
-  document.getElementById("dogSex").value =
-    currentDog.sex || "";
 
-  document.getElementById("dogIntakeDate").value =
-    currentDog.intake_date || "";
+  document
+    .getElementById("dogBreed")
+    .value =
+      currentDog.breed || "";
 
-  document.getElementById("dogStatus").value =
-    currentDog.status || "intake";
 
-  document.getElementById("dogNotes").value =
-    currentDog.notes || "";
+  document
+    .getElementById("dogAge")
+    .value =
+      currentDog.approximate_age || "";
 
-  const heading = document.querySelector("#dogForm h2");
 
-  if(heading){
-    heading.textContent = "✏️ Edit Dog";
-  }
+  document
+    .getElementById("dogSex")
+    .value =
+      currentDog.sex || "";
 
-  document.getElementById("dogForm").style.display = "block";
+
+  document
+    .getElementById("dogIntakeDate")
+    .value =
+      currentDog.intake_date || "";
+
+
+  document
+    .getElementById("dogStatus")
+    .value =
+      currentDog.status || "intake";
+
+
+  document
+    .getElementById("dogNotes")
+    .value =
+      currentDog.notes || "";
+
+
+  document
+    .querySelector("#dogForm h2")
+    .textContent =
+      "✏️ Edit Dog";
+
+
+  document
+    .getElementById("dogForm")
+    .style.display =
+      "block";
+
 
   showPage("dogs");
 
-  document.getElementById("dogName").focus();
+
+  document
+    .getElementById("dogName")
+    .focus();
+
 }
 
+
+/* =========================================================
+   SAVE DOG
+========================================================= */
 
 async function saveDog(){
 
   const name =
-    document.getElementById("dogName").value.trim();
+    document
+      .getElementById("dogName")
+      .value
+      .trim();
+
 
   if(!name){
 
-    alert("Please enter the dog's name.");
+    alert(
+      "Please enter the dog's name."
+    );
 
     return;
   }
+
 
   const dogData = {
 
     name:name,
 
     breed:
-      document.getElementById("dogBreed").value.trim() || null,
+      document
+        .getElementById("dogBreed")
+        .value
+        .trim() || null,
 
     approximate_age:
-      document.getElementById("dogAge").value.trim() || null,
+      document
+        .getElementById("dogAge")
+        .value
+        .trim() || null,
 
     sex:
-      document.getElementById("dogSex").value || null,
+      document
+        .getElementById("dogSex")
+        .value || null,
 
     intake_date:
-      document.getElementById("dogIntakeDate").value || null,
+      document
+        .getElementById("dogIntakeDate")
+        .value || null,
 
     status:
-      document.getElementById("dogStatus").value,
+      document
+        .getElementById("dogStatus")
+        .value,
 
     notes:
-      document.getElementById("dogNotes").value.trim() || null
+      document
+        .getElementById("dogNotes")
+        .value
+        .trim() || null
 
   };
 
 
-  /* EDIT EXISTING DOG */
+  /* ==========================================
+     EDIT EXISTING DOG
+  ========================================== */
 
   if(editingDogId){
 
-    const { error } = await client
+    const {
+      error
+    } = await client
       .from("dogs")
       .update(dogData)
-      .eq("id", editingDogId);
+      .eq(
+        "id",
+        editingDogId
+      );
+
 
     if(error){
 
@@ -1836,18 +2806,26 @@ async function saveDog(){
       return;
     }
 
-    alert("Dog updated successfully!");
+
+    alert(
+      "Dog updated successfully!"
+    );
 
   }
 
 
-  /* ADD NEW DOG */
+  /* ==========================================
+     ADD NEW DOG
+  ========================================== */
 
   else{
 
-    const { error } = await client
+    const {
+      error
+    } = await client
       .from("dogs")
       .insert(dogData);
+
 
     if(error){
 
@@ -1861,177 +2839,445 @@ async function saveDog(){
       return;
     }
 
-    alert("Dog added successfully!");
-
-  }
-
-
-  closeDogForm();
-
-  await loadDogs();
-
-  showPage("dogs");
-}{
-
-  const name =
-    document.getElementById("dogName").value.trim();
-
-  if(!name){
-
-    alert("Please enter the dog's name.");
-
-    return;
-  }
-
-  const { error } = await client
-    .from("dogs")
-    .insert({
-
-      name: name,
-
-      breed:
-        document.getElementById("dogBreed").value.trim() || null,
-
-      approximate_age:
-        document.getElementById("dogAge").value.trim() || null,
-
-      sex:
-        document.getElementById("dogSex").value || null,
-
-      intake_date:
-        document.getElementById("dogIntakeDate").value || null,
-
-      status:
-        document.getElementById("dogStatus").value,
-
-      notes:
-        document.getElementById("dogNotes").value.trim() || null
-
-    });
-
-  if(error){
 
     alert(
-      "Unable to save dog:\n\n" +
-      error.message
+      "Dog added successfully!"
     );
 
-    console.error(error);
-
-    return;
   }
 
-  alert("Dog added successfully!");
 
   closeDogForm();
 
+
   await loadDogs();
+
 
   showPage("dogs");
 
 }
 
 
-/* NAVIGATION */
+/* =========================================================
+   FOSTERS
+========================================================= */
+
+async function loadFosters(){
+
+  const {
+    data,
+    error
+  } = await client
+    .from("fosters")
+    .select("*");
+
+
+  if(error){
+
+    console.error(
+      "Fosters error:",
+      error
+    );
+
+    return;
+  }
+
+
+  const fosters =
+    data || [];
+
+
+  document
+    .getElementById("mFosters")
+    .textContent =
+      fosters.length;
+
+
+  document
+    .getElementById("dashFosters")
+    .textContent =
+      fosters.length;
+
+
+  const body =
+    document
+      .getElementById("fostersBody");
+
+
+  if(!fosters.length){
+
+    body.innerHTML =
+      `<tr>
+
+        <td
+          colspan="4"
+          class="empty"
+        >
+          No foster profiles have
+          been created yet.
+        </td>
+
+      </tr>`;
+
+    return;
+  }
+
+
+  body.innerHTML =
+    fosters.map(f => `
+
+      <tr>
+
+        <td>
+          ${escapeHtml(
+            f.id || "—"
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            f.city || "—"
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            f.availability || "—"
+          )}
+        </td>
+
+        <td>
+          ${f.maximum_dogs || 0}
+        </td>
+
+      </tr>
+
+    `).join("");
+
+}
+
+
+/* =========================================================
+   PLACEMENTS
+========================================================= */
+
+async function loadPlacements(){
+
+  const {
+    data,
+    error
+  } = await client
+    .from("placements")
+    .select(`
+      *,
+      dogs(name)
+    `)
+    .order(
+      "start_date",
+      {
+        ascending:false
+      }
+    );
+
+
+  if(error){
+
+    console.error(
+      "Placements error:",
+      error
+    );
+
+    return;
+  }
+
+
+  const placements =
+    data || [];
+
+
+  const activePlacements =
+    placements.filter(
+      p =>
+        [
+          "planned",
+          "active",
+          "extended"
+        ].includes(p.status)
+    );
+
+
+  document
+    .getElementById("mPlacements")
+    .textContent =
+      activePlacements.length;
+
+
+  document
+    .getElementById("dashPlacements")
+    .textContent =
+      activePlacements.length;
+
+
+  const body =
+    document
+      .getElementById("placementsBody");
+
+
+  if(!placements.length){
+
+    body.innerHTML =
+      `<tr>
+
+        <td
+          colspan="5"
+          class="empty"
+        >
+          No placements have been
+          entered yet.
+        </td>
+
+      </tr>`;
+
+    return;
+  }
+
+
+  body.innerHTML =
+    placements.map(p => `
+
+      <tr>
+
+        <td>
+          ${escapeHtml(
+            p.dogs?.name ||
+            "Unknown"
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            p.foster_id ||
+            "—"
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            p.start_date ||
+            "—"
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            p.expected_end_date ||
+            "—"
+          )}
+        </td>
+
+        <td>
+
+          <span class="pill green">
+            ${escapeHtml(
+              p.status ||
+              "unknown"
+            )}
+          </span>
+
+        </td>
+
+      </tr>
+
+    `).join("");
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
 
 function showPage(id){
 
   document
     .querySelectorAll(".section-page")
-    .forEach(x =>
-      x.classList.remove("active")
-    );
+    .forEach(page => {
+
+      page.classList.remove(
+        "active"
+      );
+
+    });
+
 
   const page =
     document.getElementById(id);
 
-  if(page)
-    page.classList.add("active");
+
+  if(page){
+
+    page.classList.add(
+      "active"
+    );
+
+  }
+
 
   document
     .querySelectorAll(".nav button")
-    .forEach(b =>
-      b.classList.toggle(
-  "active",
-  b.dataset.page === id
-      )
-    );
+    .forEach(button => {
+
+      button.classList.toggle(
+        "active",
+        button.dataset.page === id
+      );
+
+    });
+
 
   const titles = {
 
-    dashboard:"Dashboard",
+    dashboard:
+      "Dashboard",
 
-    dogs:"Dogs",
-    
-    dogProfile:"Dog Profile",
-    
-    fosters:"Fosters",
+    dogs:
+      "Dogs",
 
-    owners:"Owners & Reunification",
+    dogProfile:
+      "Dog Profile",
 
-    placements:"Placements",
+    fosters:
+      "Fosters",
 
-    checkins:"Foster Check-ins",
+    owners:
+      "Owners & Reunification",
 
-    medical:"Medical",
+    placements:
+      "Placements",
 
-    expenses:"Expenses",
+    checkins:
+      "Foster Check-ins",
 
-    documents:"Documents",
+    medical:
+      "Medical",
 
-    volunteers:"Volunteers",
+    expenses:
+      "Expenses",
 
-    needs:"Volunteer Needs",
+    documents:
+      "Documents",
 
-    reports:"Reports",
+    volunteers:
+      "Volunteers",
 
-    users:"Users & Permissions"
+    needs:
+      "Volunteer Needs",
+
+    reports:
+      "Reports",
+
+    users:
+      "Users & Permissions"
 
   };
 
-  document.getElementById("title").textContent =
-    titles[id] || "Second Leash Hub";
+
+  document
+    .getElementById("title")
+    .textContent =
+      titles[id] ||
+      "Second Leash Hub";
 
 }
 
 
-/* NAV BUTTONS */
+/* =========================================================
+   NAV BUTTONS
+========================================================= */
 
 document
-.querySelectorAll(".nav button")
-.forEach(button => {
+  .querySelectorAll(".nav button")
+  .forEach(button => {
 
-  button.addEventListener(
-    "click",
-    () => showPage(button.dataset.page)
-  );
+    button.addEventListener(
+      "click",
+      () => {
 
-});
+        showPage(
+          button.dataset.page
+        );
+
+      }
+    );
+
+  });
 
 
-/* LOGOUT */
+/* =========================================================
+   LOGOUT
+========================================================= */
 
 async function logout(){
 
-  await client.auth.signOut();
+  const {
+    error
+  } = await client.auth.signOut();
+
+
+  if(error){
+
+    console.error(
+      "Logout error:",
+      error
+    );
+
+  }
 
 }
 
 
-/* HTML SAFETY */
+/* =========================================================
+   HTML SAFETY
+========================================================= */
 
 function escapeHtml(value){
 
-  if(value === null ||
-     value === undefined)
+  if(
+    value === null ||
+    value === undefined
+  ){
+
     return "";
 
+  }
+
+
   return String(value)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+
+    .replace(
+      /</g,
+      "&lt;"
+    )
+
+    .replace(
+      />/g,
+      "&gt;"
+    )
+
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+
+    .replace(
+      /'/g,
+      "&#039;"
+    );
 
 }
 
