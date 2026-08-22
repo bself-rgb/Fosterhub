@@ -1,51 +1,1550 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Second Leash Hub</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="config.js"></script>
+
 <style>
-:root{--blue:#0d8fc4;--blue2:#0875a5;--navy:#16233d;--gray:#eef1f4;--line:#dbe1e7;--text:#253247;--muted:#6d7888;--white:#fff;--danger:#c94b4b;--warn:#d08b18;--good:#2e8b62}
-*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#f5f7f9;color:var(--text)}
-.app{display:flex;min-height:100vh}.side{width:250px;background:var(--navy);color:#fff;padding:20px 14px;position:fixed;inset:0 auto 0 0}.brand{display:flex;align-items:center;gap:10px;padding:6px 10px 24px}.brand img{width:48px;height:48px;object-fit:contain;background:#fff;border-radius:12px}.brand strong{font-size:18px}.brand span{display:block;font-size:11px;opacity:.7;margin-top:2px}.nav button{width:100%;border:0;background:transparent;color:#dfe8f2;text-align:left;padding:11px 12px;border-radius:10px;margin:2px 0;cursor:pointer;font-size:14px}.nav button.active,.nav button:hover{background:#233957;color:#fff}.nav .section{font-size:10px;text-transform:uppercase;letter-spacing:1.3px;color:#8ea0b7;margin:18px 12px 6px}.main{margin-left:250px;width:calc(100% - 250px);padding:24px;max-width:1500px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.top h1{margin:0;font-size:27px}.top p{margin:4px 0 0;color:var(--muted);font-size:13px}.actions{display:flex;gap:8px}.btn{border:0;border-radius:9px;padding:10px 14px;cursor:pointer;font-weight:700}.primary{background:var(--blue);color:#fff}.secondary{background:#fff;border:1px solid var(--line);color:var(--text)}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:17px;box-shadow:0 2px 8px #13233d08}.metric{font-size:27px;font-weight:800}.label{font-size:12px;color:var(--muted);margin-top:3px}.grid2{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;margin-top:16px}.panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px}.panel h2{font-size:16px;margin:0 0 14px}.row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #edf0f3}.row:last-child{border-bottom:0}.pill{font-size:11px;padding:5px 8px;border-radius:999px;font-weight:700}.red{background:#fdeaea;color:#a63b3b}.yellow{background:#fff4dd;color:#9a6510}.green{background:#e8f6ef;color:#23714e}.blue{background:#e6f5fb;color:#086b96}.section-page{display:none}.section-page.active{display:block}.toolbar{display:flex;gap:10px;margin-bottom:14px}.search{flex:1;border:1px solid var(--line);border-radius:9px;padding:11px 12px;background:#fff}.table{width:100%;border-collapse:collapse}.table th,.table td{text-align:left;padding:12px 10px;border-bottom:1px solid #edf0f3;font-size:13px}.table th{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}.click{cursor:pointer}.click:hover{background:#fafcfd}.dogcard{display:flex;gap:14px;align-items:center}.avatar{width:52px;height:52px;border-radius:12px;background:#e9f6fb;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--blue2);font-size:18px}.muted{color:var(--muted);font-size:12px}.detail{display:grid;grid-template-columns:1fr 1fr;gap:16px}.field{padding:10px 0;border-bottom:1px solid #edf0f3}.field b{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}.back{margin-bottom:14px}.notice{padding:12px 14px;border-radius:10px;background:#fff7e5;border:1px solid #f0d79c;color:#7c5b1c;font-size:13px;margin-bottom:14px}.empty{padding:30px;text-align:center;color:var(--muted)}@media(max-width:900px){.side{width:70px;padding:12px 8px}.brand div,.nav button span,.nav .section{display:none}.brand{padding:5px;justify-content:center}.brand img{width:46px}.nav button{text-align:center;font-size:0}.nav button:first-letter{font-size:18px}.main{margin-left:70px;width:calc(100% - 70px);padding:16px}.cards{grid-template-columns:repeat(2,1fr)}.grid2,.detail{grid-template-columns:1fr}.top{align-items:flex-start;gap:10px}.actions{flex-wrap:wrap}.table{display:block;overflow:auto}}
-</style></head>
-<body><div class="app">
-<aside class="side"><div class="brand"><img src="assets/logo.png"><div><strong>Second Leash</strong><span>Hub • Operations</span></div></div><nav class="nav">
-<div class="section">Main</div><button class="active" data-page="dashboard">🏠 <span>Dashboard</span></button><button data-page="dogs">🐶 <span>Dogs</span></button><button data-page="fosters">🏡 <span>Fosters</span></button><button data-page="owners">👤 <span>Owners</span></button><button data-page="placements">🔄 <span>Placements</span></button>
-<div class="section">Care</div><button data-page="checkins">📋 <span>Foster Check-ins</span></button><button data-page="medical">💊 <span>Medical</span></button><button data-page="expenses">💰 <span>Expenses</span></button><button data-page="documents">📁 <span>Documents</span></button>
-<div class="section">Community</div><button data-page="volunteers">🙋 <span>Volunteers</span></button><button data-page="needs">📢 <span>Volunteer Needs</span></button>
-<div class="section">Admin</div><button data-page="reports">📊 <span>Reports</span></button><button data-page="users">⚙️ <span>Users & Permissions</span></button>
-</nav></aside>
+:root{
+  --blue:#0d8fc4;
+  --blue2:#0875a5;
+  --navy:#16233d;
+  --gray:#eef1f4;
+  --line:#dbe1e7;
+  --text:#253247;
+  --muted:#6d7888;
+  --white:#fff;
+  --danger:#c94b4b;
+  --good:#2e8b62;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  background:#f5f7f9;
+  color:var(--text);
+}
+
+/* LOGIN */
+
+#loginScreen{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:linear-gradient(135deg,#eef8fc,#f5f7f9);
+}
+
+.login-card{
+  width:100%;
+  max-width:420px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:32px;
+  box-shadow:0 10px 35px #13233d12;
+  text-align:center;
+}
+
+.login-card img{
+  width:82px;
+  height:82px;
+  object-fit:contain;
+  border-radius:16px;
+  margin-bottom:12px;
+}
+
+.login-card h1{
+  margin:0;
+  font-size:25px;
+}
+
+.login-card p{
+  color:var(--muted);
+  font-size:13px;
+  margin:6px 0 24px;
+}
+
+.form-group{
+  text-align:left;
+  margin-bottom:14px;
+}
+
+.form-group label{
+  display:block;
+  font-size:12px;
+  font-weight:700;
+  margin-bottom:6px;
+}
+
+.form-group input{
+  width:100%;
+  padding:12px;
+  border:1px solid var(--line);
+  border-radius:9px;
+  font-size:14px;
+}
+
+.login-btn{
+  width:100%;
+  border:0;
+  background:var(--blue);
+  color:#fff;
+  padding:12px;
+  border-radius:9px;
+  font-weight:700;
+  cursor:pointer;
+  margin-top:5px;
+}
+
+.login-btn:hover{
+  background:var(--blue2);
+}
+
+#loginError{
+  display:none;
+  background:#fdeaea;
+  color:#a63b3b;
+  border:1px solid #f2caca;
+  padding:10px;
+  border-radius:9px;
+  margin-bottom:14px;
+  font-size:13px;
+}
+
+/* APP */
+
+#app{
+  display:none;
+}
+
+.app{
+  display:flex;
+  min-height:100vh;
+}
+
+.side{
+  width:250px;
+  background:var(--navy);
+  color:#fff;
+  padding:20px 14px;
+  position:fixed;
+  inset:0 auto 0 0;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:6px 10px 24px;
+}
+
+.brand img{
+  width:48px;
+  height:48px;
+  object-fit:contain;
+  background:#fff;
+  border-radius:12px;
+}
+
+.brand strong{
+  font-size:18px;
+}
+
+.brand span{
+  display:block;
+  font-size:11px;
+  opacity:.7;
+  margin-top:2px;
+}
+
+.nav button{
+  width:100%;
+  border:0;
+  background:transparent;
+  color:#dfe8f2;
+  text-align:left;
+  padding:11px 12px;
+  border-radius:10px;
+  margin:2px 0;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.nav button.active,
+.nav button:hover{
+  background:#233957;
+  color:#fff;
+}
+
+.nav .section{
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:1.3px;
+  color:#8ea0b7;
+  margin:18px 12px 6px;
+}
+
+.main{
+  margin-left:250px;
+  width:calc(100% - 250px);
+  padding:24px;
+  max-width:1500px;
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.top h1{
+  margin:0;
+  font-size:27px;
+}
+
+.top p{
+  margin:4px 0 0;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.actions{
+  display:flex;
+  gap:8px;
+}
+
+.btn{
+  border:0;
+  border-radius:9px;
+  padding:10px 14px;
+  cursor:pointer;
+  font-weight:700;
+}
+
+.primary{
+  background:var(--blue);
+  color:#fff;
+}
+
+.secondary{
+  background:#fff;
+  border:1px solid var(--line);
+  color:var(--text);
+}
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+}
+
+.card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:17px;
+  box-shadow:0 2px 8px #13233d08;
+}
+
+.metric{
+  font-size:27px;
+  font-weight:800;
+}
+
+.label{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:3px;
+}
+
+.grid2{
+  display:grid;
+  grid-template-columns:1.4fr 1fr;
+  gap:16px;
+  margin-top:16px;
+}
+
+.panel{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:18px;
+}
+
+.panel h2{
+  font-size:16px;
+  margin:0 0 14px;
+}
+
+.row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px 0;
+  border-bottom:1px solid #edf0f3;
+}
+
+.row:last-child{
+  border-bottom:0;
+}
+
+.pill{
+  font-size:11px;
+  padding:5px 8px;
+  border-radius:999px;
+  font-weight:700;
+}
+
+.green{
+  background:#e8f6ef;
+  color:#23714e;
+}
+
+.blue{
+  background:#e6f5fb;
+  color:#086b96;
+}
+
+.section-page{
+  display:none;
+}
+
+.section-page.active{
+  display:block;
+}
+
+.toolbar{
+  display:flex;
+  gap:10px;
+  margin-bottom:14px;
+}
+
+.search{
+  flex:1;
+  border:1px solid var(--line);
+  border-radius:9px;
+  padding:11px 12px;
+  background:#fff;
+}
+
+.table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+.table th,
+.table td{
+  text-align:left;
+  padding:12px 10px;
+  border-bottom:1px solid #edf0f3;
+  font-size:13px;
+}
+
+.table th{
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+  color:var(--muted);
+}
+
+.empty{
+  padding:30px;
+  text-align:center;
+  color:var(--muted);
+}
+
+.user-box{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.user-avatar{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  background:#e6f5fb;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--blue2);
+  font-weight:800;
+}
+
+.user-info{
+  font-size:12px;
+}
+
+.user-info strong{
+  display:block;
+}
+
+.user-info span{
+  color:#8ea0b7;
+}
+
+.logout{
+  margin-top:20px;
+  border-top:1px solid #ffffff18;
+  padding-top:15px;
+}
+
+.logout button{
+  width:100%;
+  border:1px solid #ffffff20;
+  background:transparent;
+  color:#dfe8f2;
+  padding:9px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.logout button:hover{
+  background:#233957;
+}
+
+@media(max-width:900px){
+
+  .side{
+    width:70px;
+    padding:12px 8px;
+  }
+
+  .brand div,
+  .nav button span,
+  .nav .section,
+  .user-info{
+    display:none;
+  }
+
+  .brand{
+    padding:5px;
+    justify-content:center;
+  }
+
+  .brand img{
+    width:46px;
+  }
+
+  .nav button{
+    text-align:center;
+    font-size:0;
+  }
+
+  .main{
+    margin-left:70px;
+    width:calc(100% - 70px);
+    padding:16px;
+  }
+
+  .cards{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .grid2{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+
+<div id="loginScreen">
+
+  <div class="login-card">
+
+    <img src="assets/logo.png" alt="Second Leash">
+
+    <h1>Second Leash Hub</h1>
+
+    <p>Secure operations & case management</p>
+
+    <div id="loginError"></div>
+
+    <form id="loginForm">
+
+      <div class="form-group">
+        <label>Email</label>
+        <input
+          id="email"
+          type="email"
+          autocomplete="email"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input
+          id="password"
+          type="password"
+          autocomplete="current-password"
+          required
+        >
+      </div>
+
+      <button class="login-btn" type="submit">
+        Sign In
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<!-- APPLICATION -->
+
+<div id="app">
+
+<div class="app">
+
+<aside class="side">
+
+<div class="brand">
+
+<img src="assets/logo.png">
+
+<div>
+<strong>Second Leash</strong>
+<span>Hub • Operations</span>
+</div>
+
+</div>
+
+<div class="user-box">
+
+<div class="user-avatar" id="userAvatar">B</div>
+
+<div class="user-info">
+<strong id="userName">User</strong>
+<span id="userRole">Loading...</span>
+</div>
+
+</div>
+
+<nav class="nav">
+
+<div class="section">Main</div>
+
+<button class="active" data-page="dashboard">
+🏠 <span>Dashboard</span>
+</button>
+
+<button data-page="dogs">
+🐶 <span>Dogs</span>
+</button>
+
+<button data-page="fosters">
+🏡 <span>Fosters</span>
+</button>
+
+<button data-page="owners">
+👤 <span>Owners</span>
+</button>
+
+<button data-page="placements">
+🔄 <span>Placements</span>
+</button>
+
+<div class="section">Care</div>
+
+<button data-page="checkins">
+📋 <span>Foster Check-ins</span>
+</button>
+
+<button data-page="medical">
+💊 <span>Medical</span>
+</button>
+
+<button data-page="expenses">
+💰 <span>Expenses</span>
+</button>
+
+<button data-page="documents">
+📁 <span>Documents</span>
+</button>
+
+<div class="section">Community</div>
+
+<button data-page="volunteers">
+🙋 <span>Volunteers</span>
+</button>
+
+<button data-page="needs">
+📢 <span>Volunteer Needs</span>
+</button>
+
+<div class="section">Admin</div>
+
+<button data-page="reports">
+📊 <span>Reports</span>
+</button>
+
+<button data-page="users">
+⚙️ <span>Users & Permissions</span>
+</button>
+
+</nav>
+
+<div class="logout">
+<button onclick="logout()">Sign Out</button>
+</div>
+
+</aside>
+
+
 <main class="main">
-<div class="top"><div><h1 id="title">Good evening, Brandie</h1><p id="subtitle">Second Leash Hub • temporary care, stability, reunification.</p></div><div class="actions"><button class="btn secondary" onclick="alert('Prototype: notifications will be connected in the secure version.')">🔔 Notifications</button><button class="btn primary" onclick="showPage('dogs')">+ Add Dog</button></div></div>
 
-<section id="dashboard" class="section-page active"><div class="cards"><div class="card"><div class="metric" id="mDogs">0</div><div class="label">Active Dogs</div></div><div class="card"><div class="metric" id="mFosters">0</div><div class="label">Active Fosters</div></div><div class="card"><div class="metric">2</div><div class="label">Check-ins Due</div></div><div class="card"><div class="metric">$0</div><div class="label">Tracked Expenses</div></div></div><div class="grid2"><div class="panel"><h2>⚠️ Needs Attention</h2><div class="row"><div><b>Butter</b><div class="muted">Weekly foster check-in due</div></div><span class="pill yellow">DUE</span></div><div class="row"><div><b>Reunification</b><div class="muted">Review upcoming return dates</div></div><span class="pill blue">REVIEW</span></div><div class="row"><div><b>Volunteer needs</b><div class="muted">Post current open opportunities</div></div><span class="pill green">OPEN</span></div></div><div class="panel"><h2>🐾 Case Lifecycle</h2><div class="row"><span>Owner crisis</span><span>→</span></div><div class="row"><span>Intake</span><span>→</span></div><div class="row"><span>Foster placement</span><span>→</span></div><div class="row"><span>Care & check-ins</span><span>→</span></div><div class="row"><span>Reunification</span><span>✓</span></div></div></div></section>
+<div class="top">
 
-<section id="dogs" class="section-page"><div class="toolbar"><input class="search" id="dogSearch" placeholder="Search dogs..." oninput="renderDogs()"><button class="btn primary" onclick="addDog()">+ Add Dog</button></div><div class="panel"><table class="table"><thead><tr><th>Dog</th><th>Age</th><th>Status</th><th>Foster</th><th>Reunification</th></tr></thead><tbody id="dogsBody"></tbody></table></div></section>
-<section id="dogDetail" class="section-page"><button class="btn secondary back" onclick="showPage('dogs')">← Back to Dogs</button><div class="panel"><div class="dogcard"><div class="avatar" id="detailAvatar">🐾</div><div><h2 id="detailName" style="margin:0">Dog</h2><div class="muted" id="detailSummary"></div></div></div><div class="detail" style="margin-top:18px"><div><div class="field"><b>Basic Information</b><span id="dBasic"></span></div><div class="field"><b>Placement</b><span id="dPlacement"></span></div><div class="field"><b>Behavior & Compatibility</b><span id="dBehavior"></span></div><div class="field"><b>Care Instructions</b><span id="dCare"></span></div></div><div><div class="field"><b>Medical</b><span id="dMedical"></span></div><div class="field"><b>Case Information</b><span id="dCase"></span></div><div class="field"><b>Foster Check-in Schedule</b><span id="dCheckin"></span></div><div class="field"><b>Expenses</b><span id="dExpenses"></span></div></div></div></div></section>
+<div>
 
-<section id="fosters" class="section-page"><div class="toolbar"><input class="search" placeholder="Search fosters..."><button class="btn primary" onclick="addFoster()">+ Add Foster</button></div><div class="panel"><table class="table"><thead><tr><th>Foster</th><th>Availability</th><th>Assigned Dogs</th><th>Capacity</th><th>Check-in</th></tr></thead><tbody id="fostersBody"></tbody></table></div></section>
-<section id="owners" class="section-page"><div class="panel"><h2>Owners & Reunification Cases</h2><div class="notice">Owner records are restricted to administrators/coordinators. Foster accounts will never see private owner information.</div><div class="empty">Owner records will appear here as cases are entered.</div></div></section>
-<section id="placements" class="section-page"><div class="panel"><h2>Active Placements</h2><table class="table"><thead><tr><th>Dog</th><th>Foster</th><th>Start</th><th>Expected Return</th><th>Status</th></tr></thead><tbody><tr><td>Butter</td><td>Assigned Foster</td><td>08/18/2026</td><td>09/15/2026</td><td><span class="pill green">ACTIVE</span></td></tr></tbody></table></div></section>
-<section id="checkins" class="section-page"><div class="panel"><h2>📋 Foster Check-ins</h2><p class="muted">Default schedule: weekly for short-term placements, every 2 weeks for 30–90 days, monthly for 90+ days. Admins can override any dog's schedule.</p><table class="table"><thead><tr><th>Dog</th><th>Foster</th><th>Schedule</th><th>Next Due</th><th>Status</th></tr></thead><tbody><tr><td>Butter</td><td>Assigned Foster</td><td>Weekly</td><td>08/29/2026</td><td><span class="pill yellow">DUE SOON</span></td></tr></tbody></table></div></section>
-<section id="medical" class="section-page"><div class="panel"><h2>💊 Medical Records</h2><div class="empty">Vaccinations, medications, allergies, vet visits and medical documents will be linked to each dog's profile.</div></div></section>
-<section id="expenses" class="section-page"><div class="panel"><h2>💰 Expenses</h2><div class="empty">Track veterinary, food, medication, transportation and supply costs by dog for easier grant reporting.</div></div></section>
-<section id="documents" class="section-page"><div class="panel"><h2>📁 Documents</h2><div class="empty">Foster agreements, medical records, vaccination records, receipts and other case documents will live here.</div></div></section>
-<section id="volunteers" class="section-page"><div class="toolbar"><input class="search" placeholder="Search volunteers..."><button class="btn primary" onclick="addVolunteer()">+ Add Volunteer</button></div><div class="panel"><h2>🙋 Volunteers</h2><div class="empty">Volunteer profiles, skills, availability, assignments and completed service will be managed here.</div></div></section>
-<section id="needs" class="section-page"><div class="toolbar"><button class="btn primary" onclick="addNeed()">+ Post Volunteer Need</button></div><div class="panel"><h2>📢 Volunteer Needs</h2><div class="row"><div><b>Foster needed</b><div class="muted">Open placement opportunity</div></div><span class="pill red">URGENT</span></div><div class="row"><div><b>Transport driver</b><div class="muted">Pickup / drop-off assistance</div></div><span class="pill yellow">OPEN</span></div><div class="row"><div><b>Home visit</b><div class="muted">Volunteer home visit assignment</div></div><span class="pill green">OPEN</span></div></div></section>
-<section id="reports" class="section-page"><div class="panel"><h2>📊 Reports</h2><div class="empty">Future reports: dogs served, reunifications, foster retention, average placement length, expenses by category, and grant-ready impact summaries.</div></div></section>
-<section id="users" class="section-page"><div class="panel"><h2>⚙️ Users & Permissions</h2><div class="row"><div><b>Brandie</b><div class="muted">Super Admin • full access</div></div><span class="pill blue">ADMIN</span></div><div class="row"><div><b>Michelle</b><div class="muted">Co-Admin • operational access</div></div><span class="pill blue">ADMIN</span></div><div class="row"><div><b>Fosters</b><div class="muted">Only their own profile and assigned dogs</div></div><span class="pill green">LIMITED</span></div><div class="row"><div><b>Volunteers</b><div class="muted">Opportunities, assignments and volunteer profile</div></div><span class="pill green">LIMITED</span></div></div></section>
-</main></div>
+<h1 id="title">
+Second Leash Hub
+</h1>
+
+<p id="subtitle">
+Temporary care, stability, reunification.
+</p>
+
+</div>
+
+<div class="actions">
+
+<button class="btn secondary" onclick="loadDashboard()">
+↻ Refresh
+</button>
+
+<button class="btn primary" onclick="showPage('dogs')">
++ Add Dog
+</button>
+
+</div>
+
+</div>
+
+
+<!-- DASHBOARD -->
+
+<section id="dashboard" class="section-page active">
+
+<div class="cards">
+
+<div class="card">
+<div class="metric" id="mDogs">0</div>
+<div class="label">Dogs</div>
+</div>
+
+<div class="card">
+<div class="metric" id="mFosters">0</div>
+<div class="label">Fosters</div>
+</div>
+
+<div class="card">
+<div class="metric" id="mPlacements">0</div>
+<div class="label">Active Placements</div>
+</div>
+
+<div class="card">
+<div class="metric" id="mExpenses">$0</div>
+<div class="label">Tracked Expenses</div>
+</div>
+
+</div>
+
+
+<div class="grid2">
+
+<div class="panel">
+
+<h2>🐾 Second Leash Operations</h2>
+
+<div class="row">
+<span>Dogs currently in the system</span>
+<strong id="dashDogs">0</strong>
+</div>
+
+<div class="row">
+<span>Foster homes</span>
+<strong id="dashFosters">0</strong>
+</div>
+
+<div class="row">
+<span>Active placements</span>
+<strong id="dashPlacements">0</strong>
+</div>
+
+</div>
+
+
+<div class="panel">
+
+<h2>👑 Your Access</h2>
+
+<div class="row">
+<span>Account</span>
+<strong id="dashEmail"></strong>
+</div>
+
+<div class="row">
+<span>Role</span>
+<span class="pill blue" id="dashRole">
+SUPER ADMIN
+</span>
+</div>
+
+<div class="row">
+<span>Status</span>
+<span class="pill green">
+ACTIVE
+</span>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- DOGS -->
+
+<section id="dogs" class="section-page">
+
+<div class="toolbar">
+
+<input
+class="search"
+id="dogSearch"
+placeholder="Search dogs..."
+oninput="filterDogs()"
+>
+
+<button
+class="btn primary"
+onclick="addDog()"
+>
++ Add Dog
+</button>
+
+</div>
+
+<div class="panel">
+
+<table class="table">
+
+<thead>
+
+<tr>
+<th>Dog</th>
+<th>Breed</th>
+<th>Status</th>
+<th>Intake</th>
+</tr>
+
+</thead>
+
+<tbody id="dogsBody">
+
+<tr>
+<td colspan="4" class="empty">
+Loading dogs...
+</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<!-- FOSTERS -->
+
+<section id="fosters" class="section-page">
+
+<div class="panel">
+
+<h2>🏡 Foster Homes</h2>
+
+<table class="table">
+
+<thead>
+
+<tr>
+<th>Foster</th>
+<th>City</th>
+<th>Availability</th>
+<th>Capacity</th>
+</tr>
+
+</thead>
+
+<tbody id="fostersBody">
+
+<tr>
+<td colspan="4" class="empty">
+Loading fosters...
+</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<section id="owners" class="section-page">
+
+<div class="panel">
+
+<h2>👤 Owners & Reunification</h2>
+
+<p class="empty">
+Owner records will be connected next.
+</p>
+
+</div>
+
+</section>
+
+
+<section id="placements" class="section-page">
+
+<div class="panel">
+
+<h2>🔄 Placements</h2>
+
+<table class="table">
+
+<thead>
+
+<tr>
+<th>Dog</th>
+<th>Foster</th>
+<th>Start</th>
+<th>Expected End</th>
+<th>Status</th>
+</tr>
+
+</thead>
+
+<tbody id="placementsBody">
+
+<tr>
+<td colspan="5" class="empty">
+Loading placements...
+</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<section id="checkins" class="section-page">
+
+<div class="panel">
+
+<h2>📋 Foster Check-ins</h2>
+
+<p class="empty">
+Foster check-in records will appear here.
+</p>
+
+</div>
+
+</section>
+
+
+<section id="medical" class="section-page">
+
+<div class="panel">
+
+<h2>💊 Medical</h2>
+
+<p class="empty">
+Vaccinations, medications and veterinary records will be connected next.
+</p>
+
+</div>
+
+</section>
+
+
+<section id="expenses" class="section-page">
+
+<div class="panel">
+
+<h2>💰 Expenses</h2>
+
+<p class="empty">
+Expense tracking will be connected next.
+</p>
+
+</div>
+
+</section>
+
+
+<section id="documents" class="section-page">
+
+<div class="panel">
+
+<h2>📁 Documents</h2>
+
+<p class="empty">
+Documents and case files will be connected next.
+</p>
+
+</div>
+
+</section>
+
+
+<section id="volunteers" class="section-page">
+
+<div class="panel">
+
+<h2>🙋 Volunteers</h2>
+
+<p class="empty">
+Volunteer management will be connected next.
+</p>
+
+</div>
+
+</section>
+
+
+<section id="needs" class="section-page">
+
+<div class="panel">
+
+<h2>📢 Volunteer Needs</h2>
+
+<p class="empty">
+Volunteer opportunities will be connected next.
+</p>
+
+</div>
+
+</section>
+
+
+<section id="reports" class="section-page">
+
+<div class="panel">
+
+<h2>📊 Reports</h2>
+
+<p class="empty">
+Reporting will be connected after the operational modules are complete.
+</p>
+
+</div>
+
+</section>
+
+
+<section id="users" class="section-page">
+
+<div class="panel">
+
+<h2>⚙️ Users & Permissions</h2>
+
+<p class="empty">
+User management will be connected next.
+</p>
+
+</div>
+
+</section>
+
+
+</main>
+
+</div>
+
+</div>
+
+
 <script>
-const dogs=[{id:'SL-001',name:'Butter',age:'Adult',breed:'Mixed Pit Bull',sex:'Unknown',status:'Active Foster',foster:'Assigned Foster',returnDate:'09/15/2026',behavior:'Unknown; monitor dog/cat/child compatibility',care:'Feeding and routine to be completed at intake',medical:'Records to be added',caseInfo:'Temporary foster / reunification case',checkin:'Weekly',expenses:0}];
-const fosters=[{name:'Assigned Foster',availability:'Available',dogs:1,capacity:2,checkin:'Weekly'}];
-function showPage(id){document.querySelectorAll('.section-page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));const titles={dashboard:'Good evening, Brandie',dogs:'Dogs',fosters:'Fosters',owners:'Owners & Reunification',placements:'Placements',checkins:'Foster Check-ins',medical:'Medical',expenses:'Expenses',documents:'Documents',volunteers:'Volunteers',needs:'Volunteer Needs',reports:'Reports',users:'Users & Permissions'};document.getElementById('title').textContent=titles[id]||'Second Leash Hub';renderAll()}
-function renderDogs(){const q=(document.getElementById('dogSearch')?.value||'').toLowerCase();document.getElementById('dogsBody').innerHTML=dogs.filter(d=>(d.name+d.breed+d.status+d.foster).toLowerCase().includes(q)).map(d=>`<tr class="click" onclick="openDog('${d.id}')"><td><b>${d.name}</b><div class="muted">${d.breed} • ${d.id}</div></td><td>${d.age}</td><td><span class="pill green">${d.status}</span></td><td>${d.foster}</td><td>${d.returnDate}</td></tr>`).join('')||'<tr><td colspan="5" class="empty">No dogs found.</td></tr>'}
-function renderFosters(){document.getElementById('fostersBody').innerHTML=fosters.map(f=>`<tr><td><b>${f.name}</b></td><td>${f.availability}</td><td>${f.dogs}</td><td>${f.capacity}</td><td>${f.checkin}</td></tr>`).join('')}
-function openDog(id){const d=dogs.find(x=>x.id===id);if(!d)return;document.getElementById('detailName').textContent=d.name;document.getElementById('detailSummary').textContent=`${d.breed} • ${d.age} • ${d.status} • ${d.id}`;document.getElementById('dBasic').textContent=`${d.breed}; ${d.sex}; age: ${d.age}; microchip: not entered; spay/neuter: not entered.`;document.getElementById('dPlacement').textContent=`Foster: ${d.foster}; start date: not entered; expected reunification: ${d.returnDate}.`;document.getElementById('dBehavior').textContent=d.behavior;document.getElementById('dCare').textContent=d.care;document.getElementById('dMedical').textContent=d.medical;document.getElementById('dCase').textContent=d.caseInfo;document.getElementById('dCheckin').textContent=d.checkin+' check-in; admin override available.';document.getElementById('dExpenses').textContent=`$${d.expenses.toFixed(2)} tracked so far.`;document.querySelectorAll('.section-page').forEach(x=>x.classList.remove('active'));document.getElementById('dogDetail').classList.add('active');document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));document.getElementById('title').textContent=d.name;}
-function addDog(){const name=prompt('Dog name:');if(!name)return;dogs.push({id:'SL-'+String(dogs.length+1).padStart(3,'0'),name,age:'Unknown',breed:'Not entered',sex:'Not entered',status:'Intake',foster:'Unassigned',returnDate:'Not set',behavior:'Not assessed',care:'Not entered',medical:'Not entered',caseInfo:'New case',checkin:'Weekly',expenses:0});renderAll();showPage('dogs')}
-function addFoster(){const name=prompt('Foster name:');if(!name)return;fosters.push({name,availability:'Available',dogs:0,capacity:2,checkin:'Weekly'});renderAll()}
-function addVolunteer(){alert('Volunteer profile form will be connected in the next build.')}
-function addNeed(){const title=prompt('What volunteer help is needed?');if(title)alert('Prototype saved: '+title)}
-function renderAll(){document.getElementById('mDogs').textContent=dogs.length;document.getElementById('mFosters').textContent=fosters.length;renderDogs();renderFosters()}
-document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));renderAll();
-</script></body></html>
+
+const client = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+
+let currentUser = null;
+let currentProfile = null;
+let allDogs = [];
+
+
+/* LOGIN */
+
+document
+.getElementById("loginForm")
+.addEventListener("submit", async function(e){
+
+  e.preventDefault();
+
+  const errorBox = document.getElementById("loginError");
+
+  errorBox.style.display = "none";
+
+  const email =
+    document.getElementById("email").value.trim();
+
+  const password =
+    document.getElementById("password").value;
+
+  const { data, error } =
+    await client.auth.signInWithPassword({
+      email,
+      password
+    });
+
+  if(error){
+
+    errorBox.textContent = error.message;
+
+    errorBox.style.display = "block";
+
+    return;
+  }
+
+  await startApp(data.user);
+
+});
+
+
+/* START APP */
+
+async function startApp(user){
+
+  currentUser = user;
+
+  const { data: profile, error } =
+    await client
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+
+  if(error){
+
+    document.getElementById("loginError").textContent =
+      "Your account is authenticated, but your Second Leash profile could not be loaded.";
+
+    document.getElementById("loginError").style.display = "block";
+
+    await client.auth.signOut();
+
+    return;
+  }
+
+  currentProfile = profile;
+
+  if(!profile.active){
+
+    alert("Your Second Leash account is inactive.");
+
+    await client.auth.signOut();
+
+    return;
+  }
+
+  document.getElementById("loginScreen").style.display = "none";
+
+  document.getElementById("app").style.display = "block";
+
+  const firstName =
+    profile.first_name ||
+    user.email.split("@")[0];
+
+  document.getElementById("userName").textContent =
+    firstName;
+
+  document.getElementById("userRole").textContent =
+    profile.role.replace("_"," ").toUpperCase();
+
+  document.getElementById("dashEmail").textContent =
+    user.email;
+
+  document.getElementById("dashRole").textContent =
+    profile.role.replace("_"," ").toUpperCase();
+
+  document.getElementById("userAvatar").textContent =
+    firstName.charAt(0).toUpperCase();
+
+  document.getElementById("title").textContent =
+    `Good to see you, ${firstName}`;
+
+  await loadDashboard();
+
+}
+
+
+/* SESSION */
+
+async function checkSession(){
+
+  const { data } =
+    await client.auth.getSession();
+
+  if(data.session){
+
+    await startApp(data.session.user);
+
+  }
+
+}
+
+checkSession();
+
+
+/* AUTH STATE */
+
+client.auth.onAuthStateChange(
+  async (event, session) => {
+
+    if(event === "SIGNED_OUT"){
+
+      document.getElementById("app").style.display =
+        "none";
+
+      document.getElementById("loginScreen").style.display =
+        "flex";
+
+    }
+
+  }
+);
+
+
+/* DASHBOARD */
+
+async function loadDashboard(){
+
+  await loadDogs();
+
+  await loadFosters();
+
+  await loadPlacements();
+
+}
+
+
+/* DOGS */
+
+async function loadDogs(){
+
+  const { data, error } =
+    await client
+      .from("dogs")
+      .select("*")
+      .order("created_at", {
+        ascending:false
+      });
+
+  if(error){
+
+    console.error(error);
+
+    return;
+  }
+
+  allDogs = data || [];
+
+  document.getElementById("mDogs").textContent =
+    allDogs.length;
+
+  document.getElementById("dashDogs").textContent =
+    allDogs.length;
+
+  renderDogs(allDogs);
+
+}
+
+
+function renderDogs(dogs){
+
+  const body =
+    document.getElementById("dogsBody");
+
+  if(!dogs.length){
+
+    body.innerHTML =
+      `<tr>
+        <td colspan="4" class="empty">
+        No dogs have been entered yet.
+        </td>
+      </tr>`;
+
+    return;
+  }
+
+  body.innerHTML =
+    dogs.map(d => `
+
+      <tr>
+
+        <td>
+          <strong>${escapeHtml(d.name)}</strong>
+          <div style="font-size:11px;color:#6d7888">
+            SL-${d.dog_number || ""}
+          </div>
+        </td>
+
+        <td>
+          ${escapeHtml(d.breed || "Not entered")}
+        </td>
+
+        <td>
+          <span class="pill blue">
+            ${escapeHtml(d.status)}
+          </span>
+        </td>
+
+        <td>
+          ${d.intake_date || "—"}
+        </td>
+
+      </tr>
+
+    `).join("");
+
+}
+
+
+function filterDogs(){
+
+  const q =
+    document
+      .getElementById("dogSearch")
+      .value
+      .toLowerCase();
+
+  renderDogs(
+    allDogs.filter(d =>
+      `${d.name} ${d.breed} ${d.status}`
+      .toLowerCase()
+      .includes(q)
+    )
+  );
+
+}
+
+
+/* FOSTERS */
+
+async function loadFosters(){
+
+  const { data, error } =
+    await client
+      .from("fosters")
+      .select("*");
+
+  if(error){
+
+    console.error(error);
+
+    return;
+  }
+
+  const fosters =
+    data || [];
+
+  document.getElementById("mFosters").textContent =
+    fosters.length;
+
+  document.getElementById("dashFosters").textContent =
+    fosters.length;
+
+  const body =
+    document.getElementById("fostersBody");
+
+  if(!fosters.length){
+
+    body.innerHTML =
+      `<tr>
+        <td colspan="4" class="empty">
+        No foster profiles have been created yet.
+        </td>
+      </tr>`;
+
+    return;
+  }
+
+  body.innerHTML =
+    fosters.map(f => `
+
+      <tr>
+
+        <td>${escapeHtml(f.id)}</td>
+
+        <td>${escapeHtml(f.city || "—")}</td>
+
+        <td>${escapeHtml(f.availability || "—")}</td>
+
+        <td>${f.maximum_dogs || 0}</td>
+
+      </tr>
+
+    `).join("");
+
+}
+
+
+/* PLACEMENTS */
+
+async function loadPlacements(){
+
+  const { data, error } =
+    await client
+      .from("placements")
+      .select(`
+        *,
+        dogs(name)
+      `)
+      .order("start_date", {
+        ascending:false
+      });
+
+  if(error){
+
+    console.error(error);
+
+    return;
+  }
+
+  const placements =
+    data || [];
+
+  document.getElementById("mPlacements").textContent =
+    placements.filter(p =>
+      ["planned","active","extended"]
+      .includes(p.status)
+    ).length;
+
+  document.getElementById("dashPlacements").textContent =
+    placements.filter(p =>
+      ["planned","active","extended"]
+      .includes(p.status)
+    ).length;
+
+  const body =
+    document.getElementById("placementsBody");
+
+  if(!placements.length){
+
+    body.innerHTML =
+      `<tr>
+        <td colspan="5" class="empty">
+        No placements have been entered yet.
+        </td>
+      </tr>`;
+
+    return;
+  }
+
+  body.innerHTML =
+    placements.map(p => `
+
+      <tr>
+
+        <td>
+          ${escapeHtml(
+            p.dogs?.name || "Unknown"
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(p.foster_id)}
+        </td>
+
+        <td>
+          ${p.start_date || "—"}
+        </td>
+
+        <td>
+          ${p.expected_end_date || "—"}
+        </td>
+
+        <td>
+          <span class="pill green">
+            ${escapeHtml(p.status)}
+          </span>
+        </td>
+
+      </tr>
+
+    `).join("");
+
+}
+
+
+/* ADD DOG */
+
+async function addDog(){
+
+  const name =
+    prompt("Dog name:");
+
+  if(!name) return;
+
+  const { error } =
+    await client
+      .from("dogs")
+      .insert({
+        name:name.trim(),
+        status:"intake"
+      });
+
+  if(error){
+
+    alert(
+      "Unable to add dog:\n\n" +
+      error.message
+    );
+
+    return;
+  }
+
+  await loadDogs();
+
+  showPage("dogs");
+
+}
+
+
+/* NAVIGATION */
+
+function showPage(id){
+
+  document
+    .querySelectorAll(".section-page")
+    .forEach(x =>
+      x.classList.remove("active")
+    );
+
+  const page =
+    document.getElementById(id);
+
+  if(page)
+    page.classList.add("active");
+
+  document
+    .querySelectorAll(".nav button")
+    .forEach(b =>
+      b.classList.toggle(
+        "active",
+        b.dataset.page === id
+      )
+    );
+
+  const titles = {
+
+    dashboard:"Dashboard",
+
+    dogs:"Dogs",
+
+    fosters:"Fosters",
+
+    owners:"Owners & Reunification",
+
+    placements:"Placements",
+
+    checkins:"Foster Check-ins",
+
+    medical:"Medical",
+
+    expenses:"Expenses",
+
+    documents:"Documents",
+
+    volunteers:"Volunteers",
+
+    needs:"Volunteer Needs",
+
+    reports:"Reports",
+
+    users:"Users & Permissions"
+
+  };
+
+  document.getElementById("title").textContent =
+    titles[id] || "Second Leash Hub";
+
+}
+
+
+/* NAV BUTTONS */
+
+document
+.querySelectorAll(".nav button")
+.forEach(button => {
+
+  button.addEventListener(
+    "click",
+    () => showPage(button.dataset.page)
+  );
+
+});
+
+
+/* LOGOUT */
+
+async function logout(){
+
+  await client.auth.signOut();
+
+}
+
+
+/* HTML SAFETY */
+
+function escapeHtml(value){
+
+  if(value === null ||
+     value === undefined)
+    return "";
+
+  return String(value)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+</script>
+
+</body>
+</html>
