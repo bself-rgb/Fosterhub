@@ -1482,37 +1482,87 @@ async function loadPlacements(){
 }
 
 
-/* ADD DOG */
+/* DOG FORM */
 
-async function addDog(){
+function openDogForm(){
 
-  const name = prompt("Dog name:");
+  document.getElementById("dogForm").style.display = "block";
 
-  if(!name) return;
+  document.getElementById("dogName").focus();
 
-  const breed = prompt("Breed or description:");
+  showPage("dogs");
 
-  const status = "intake";
+}
+
+
+function closeDogForm(){
+
+  document.getElementById("dogForm").style.display = "none";
+
+  document.getElementById("dogName").value = "";
+  document.getElementById("dogBreed").value = "";
+  document.getElementById("dogAge").value = "";
+  document.getElementById("dogSex").value = "";
+  document.getElementById("dogIntakeDate").value = "";
+  document.getElementById("dogStatus").value = "intake";
+  document.getElementById("dogNotes").value = "";
+
+}
+
+
+async function saveDog(){
+
+  const name =
+    document.getElementById("dogName").value.trim();
+
+  if(!name){
+
+    alert("Please enter the dog's name.");
+
+    return;
+  }
 
   const { error } = await client
     .from("dogs")
     .insert({
-      name: name.trim(),
-      breed: breed ? breed.trim() : null,
-      status: status
+
+      name: name,
+
+      breed:
+        document.getElementById("dogBreed").value.trim() || null,
+
+      approximate_age:
+        document.getElementById("dogAge").value.trim() || null,
+
+      sex:
+        document.getElementById("dogSex").value || null,
+
+      intake_date:
+        document.getElementById("dogIntakeDate").value || null,
+
+      status:
+        document.getElementById("dogStatus").value,
+
+      notes:
+        document.getElementById("dogNotes").value.trim() || null
+
     });
 
   if(error){
 
     alert(
-      "Unable to add dog:\n\n" +
+      "Unable to save dog:\n\n" +
       error.message
     );
+
+    console.error(error);
 
     return;
   }
 
   alert("Dog added successfully!");
+
+  closeDogForm();
 
   await loadDogs();
 
