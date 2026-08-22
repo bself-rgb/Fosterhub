@@ -1412,17 +1412,32 @@ async function loadPlacements(){
 
 async function addDog(){
 
-  const name =
-    prompt("Dog name:");
+  const dogName = prompt("Dog name:");
 
-  if(!name) return;
+  if(!dogName) return;
+
+  const breed = prompt("Breed or description:") || "";
+
+  const sex = prompt("Sex (Male/Female/Unknown):") || "";
+
+  const age = prompt("Approximate age:") || "";
+
+  const color = prompt("Color:") || "";
+
+  const intakeDate =
+    prompt("Intake date (YYYY-MM-DD):") || null;
 
   const { error } =
     await client
       .from("dogs")
       .insert({
-        name:name.trim(),
-        status:"intake"
+        name: dogName.trim(),
+        breed: breed.trim() || null,
+        sex: sex.trim() || null,
+        approximate_age: age.trim() || null,
+        color: color.trim() || null,
+        intake_date: intakeDate,
+        status: "intake"
       });
 
   if(error){
@@ -1432,8 +1447,12 @@ async function addDog(){
       error.message
     );
 
+    console.error(error);
+
     return;
   }
+
+  alert("Dog added successfully!");
 
   await loadDogs();
 
