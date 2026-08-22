@@ -1488,14 +1488,65 @@ function filterDogs(){
 
 /* DOG DETAILS */
 
+let currentDog = null;
+
+
+/* DOG DETAILS */
+
 async function viewDog(id){
 
   const dog = allDogs.find(d => d.id === id);
 
   if(!dog){
+
     alert("Dog record could not be found.");
+
     return;
   }
+
+  currentDog = dog;
+
+  document.getElementById("profileDogName").textContent =
+    dog.name || "Unnamed Dog";
+
+  document.getElementById("profileDogNumber").textContent =
+    "SL-" + (dog.dog_number || "Not assigned");
+
+  document.getElementById("profileDogStatus").textContent =
+    (dog.status || "unknown").replaceAll("_"," ").toUpperCase();
+
+  document.getElementById("profileDogBreed").textContent =
+    dog.breed || "Not entered";
+
+  document.getElementById("profileDogAge").textContent =
+    dog.approximate_age || "Not entered";
+
+  document.getElementById("profileDogSex").textContent =
+    dog.sex || "Not entered";
+
+  document.getElementById("profileDogIntake").textContent =
+    dog.intake_date || "Not entered";
+
+  document.getElementById("profileDogCreated").textContent =
+    dog.created_at
+      ? new Date(dog.created_at).toLocaleDateString()
+      : "—";
+
+  document.getElementById("profileDogNotes").textContent =
+    dog.notes || "No notes recorded.";
+
+  document.getElementById("profileOverviewStatus").textContent =
+    dog.status || "—";
+
+  document.getElementById("profileOverviewFoster").textContent =
+    "None";
+
+  document.getElementById("profileOverviewReturn").textContent =
+    "—";
+
+  showPage("dogProfile");
+
+}
 
   alert(
     "🐶 " + dog.name +
