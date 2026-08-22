@@ -1696,18 +1696,23 @@ async function loadPlacements(){
 
 /* DOG FORM */
 
+let editingDogId = null;
+
 function openDogForm(){
+
+  editingDogId = null;
 
   document.getElementById("dogForm").style.display = "block";
 
   document.getElementById("dogName").focus();
 
   showPage("dogs");
-
 }
 
 
 function closeDogForm(){
+
+  editingDogId = null;
 
   document.getElementById("dogForm").style.display = "none";
 
@@ -1719,10 +1724,154 @@ function closeDogForm(){
   document.getElementById("dogStatus").value = "intake";
   document.getElementById("dogNotes").value = "";
 
+  const heading = document.querySelector("#dogForm h2");
+
+  if(heading){
+    heading.textContent = "🐶 Add New Dog";
+  }
+}
+
+
+function editCurrentDog(){
+
+  if(!currentDog){
+
+    alert("No dog is currently selected.");
+
+    return;
+  }
+
+  editingDogId = currentDog.id;
+
+  document.getElementById("dogName").value =
+    currentDog.name || "";
+
+  document.getElementById("dogBreed").value =
+    currentDog.breed || "";
+
+  document.getElementById("dogAge").value =
+    currentDog.approximate_age || "";
+
+  document.getElementById("dogSex").value =
+    currentDog.sex || "";
+
+  document.getElementById("dogIntakeDate").value =
+    currentDog.intake_date || "";
+
+  document.getElementById("dogStatus").value =
+    currentDog.status || "intake";
+
+  document.getElementById("dogNotes").value =
+    currentDog.notes || "";
+
+  const heading = document.querySelector("#dogForm h2");
+
+  if(heading){
+    heading.textContent = "✏️ Edit Dog";
+  }
+
+  document.getElementById("dogForm").style.display = "block";
+
+  showPage("dogs");
+
+  document.getElementById("dogName").focus();
 }
 
 
 async function saveDog(){
+
+  const name =
+    document.getElementById("dogName").value.trim();
+
+  if(!name){
+
+    alert("Please enter the dog's name.");
+
+    return;
+  }
+
+  const dogData = {
+
+    name:name,
+
+    breed:
+      document.getElementById("dogBreed").value.trim() || null,
+
+    approximate_age:
+      document.getElementById("dogAge").value.trim() || null,
+
+    sex:
+      document.getElementById("dogSex").value || null,
+
+    intake_date:
+      document.getElementById("dogIntakeDate").value || null,
+
+    status:
+      document.getElementById("dogStatus").value,
+
+    notes:
+      document.getElementById("dogNotes").value.trim() || null
+
+  };
+
+
+  /* EDIT EXISTING DOG */
+
+  if(editingDogId){
+
+    const { error } = await client
+      .from("dogs")
+      .update(dogData)
+      .eq("id", editingDogId);
+
+    if(error){
+
+      alert(
+        "Unable to update dog:\n\n" +
+        error.message
+      );
+
+      console.error(error);
+
+      return;
+    }
+
+    alert("Dog updated successfully!");
+
+  }
+
+
+  /* ADD NEW DOG */
+
+  else{
+
+    const { error } = await client
+      .from("dogs")
+      .insert(dogData);
+
+    if(error){
+
+      alert(
+        "Unable to save dog:\n\n" +
+        error.message
+      );
+
+      console.error(error);
+
+      return;
+    }
+
+    alert("Dog added successfully!");
+
+  }
+
+
+  closeDogForm();
+
+  await loadDogs();
+
+  showPage("dogs");
+}{
 
   const name =
     document.getElementById("dogName").value.trim();
