@@ -1573,6 +1573,7 @@ body{
 </section>
 
 
+```html
 <!-- =========================================================
      FOSTERS
 ========================================================= -->
@@ -1582,60 +1583,240 @@ body{
   class="section-page"
 >
 
-<div class="panel">
+  <!-- FOSTER FORM -->
 
-<h2>
-  🏡 Foster Homes
-</h2>
+  <div
+    id="fosterForm"
+    class="panel"
+    style="display:none;margin-bottom:16px;"
+  >
 
-<table class="table">
+    <h2 id="fosterFormTitle">
+      🏡 Add Foster
+    </h2>
 
-<thead>
+    <div class="dog-form-grid">
 
-<tr>
+      <div class="form-group">
+        <label for="fosterFirstName">First Name</label>
+        <input
+          id="fosterFirstName"
+          placeholder="First name"
+        >
+      </div>
 
-<th>
-  Foster
-</th>
+      <div class="form-group">
+        <label for="fosterLastName">Last Name</label>
+        <input
+          id="fosterLastName"
+          placeholder="Last name"
+        >
+      </div>
 
-<th>
-  City
-</th>
+      <div class="form-group">
+        <label for="fosterAddress">Address</label>
+        <input
+          id="fosterAddress"
+          placeholder="Street address"
+        >
+      </div>
 
-<th>
-  Availability
-</th>
+      <div class="form-group">
+        <label for="fosterCity">City</label>
+        <input
+          id="fosterCity"
+          placeholder="City"
+        >
+      </div>
 
-<th>
-  Capacity
-</th>
+      <div class="form-group">
+        <label for="fosterState">State</label>
+        <input
+          id="fosterState"
+          placeholder="State"
+        >
+      </div>
 
-</tr>
+      <div class="form-group">
+        <label for="fosterZip">ZIP Code</label>
+        <input
+          id="fosterZip"
+          placeholder="ZIP code"
+        >
+      </div>
 
-</thead>
+      <div class="form-group">
+        <label for="householdDogs">Dogs in Household</label>
+        <input
+          id="householdDogs"
+          type="number"
+          min="0"
+          value="0"
+        >
+      </div>
 
-<tbody id="fostersBody">
+      <div class="form-group">
+        <label for="householdCats">Cats in Household</label>
+        <input
+          id="householdCats"
+          type="number"
+          min="0"
+          value="0"
+        >
+      </div>
 
-<tr>
+      <div class="form-group">
+        <label for="householdChildren">Children in Household</label>
+        <input
+          id="householdChildren"
+          type="number"
+          min="0"
+          value="0"
+        >
+      </div>
 
-<td
-  colspan="4"
-  class="empty"
->
-  Loading fosters...
-</td>
+      <div class="form-group">
+        <label for="maxDogs">Maximum Dogs</label>
+        <input
+          id="maxDogs"
+          type="number"
+          min="1"
+          value="1"
+        >
+      </div>
 
-</tr>
+      <div class="form-group">
+        <label for="transportation">Transportation</label>
+        <select id="transportation">
+          <option value="">Select...</option>
+          <option value="own_vehicle">Own vehicle</option>
+          <option value="limited">Limited</option>
+          <option value="none">No transportation</option>
+        </select>
+      </div>
 
-</tbody>
+      <div class="form-group">
+        <label for="transportationAvailable">
+          Transportation Available
+        </label>
 
-</table>
+        <select id="transportationAvailable">
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
+      </div>
 
-</div>
+      <div class="form-group">
+        <label for="fosterAvailability">
+          Availability
+        </label>
+
+        <select id="fosterAvailability">
+          <option value="available">Available</option>
+          <option value="limited">Limited</option>
+          <option value="full">Full</option>
+          <option value="unavailable">Unavailable</option>
+        </select>
+      </div>
+
+    </div>
+
+    <div style="display:flex;gap:10px;">
+
+      <button
+        class="btn primary"
+        onclick="saveFoster()"
+      >
+        Save Foster
+      </button>
+
+      <button
+        class="btn secondary"
+        onclick="closeFosterForm()"
+      >
+        Cancel
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- FOSTER SEARCH -->
+
+  <div class="toolbar">
+
+    <input
+      class="search"
+      id="fosterSearch"
+      placeholder="Search fosters..."
+      oninput="filterFosters()"
+    >
+
+    <button
+      class="btn primary"
+      onclick="openFosterForm()"
+    >
+      + Add Foster
+    </button>
+
+  </div>
+
+
+  <!-- FOSTER TABLE -->
+
+  <div class="panel">
+
+    <table class="table">
+
+      <thead>
+
+        <tr>
+
+          <th>
+            Foster
+          </th>
+
+          <th>
+            Location
+          </th>
+
+          <th>
+            Availability
+          </th>
+
+          <th>
+            Capacity
+          </th>
+
+          <th>
+            Transportation
+          </th>
+
+        </tr>
+
+      </thead>
+
+      <tbody id="fostersBody">
+
+        <tr>
+
+          <td
+            colspan="5"
+            class="empty"
+          >
+            Loading fosters...
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
 
 </section>
-
-
 <!-- =========================================================
      OWNERS
 ========================================================= -->
@@ -2858,8 +3039,17 @@ async function saveDog(){
 }
 
 
+```javascript
 /* =========================================================
    FOSTERS
+========================================================= */
+
+let allFosters = [];
+let editingFosterId = null;
+
+
+/* =========================================================
+   LOAD FOSTERS
 ========================================================= */
 
 async function loadFosters(){
@@ -2869,7 +3059,10 @@ async function loadFosters(){
     error
   } = await client
     .from("fosters")
-    .select("*");
+    .select("*")
+    .order("created_at", {
+      ascending:false
+    });
 
 
   if(error){
@@ -2879,29 +3072,58 @@ async function loadFosters(){
       error
     );
 
+    const body =
+      document.getElementById("fostersBody");
+
+    if(body){
+
+      body.innerHTML =
+        `<tr>
+          <td colspan="5" class="empty">
+            Unable to load foster records.
+          </td>
+        </tr>`;
+
+    }
+
     return;
   }
 
 
-  const fosters =
+  allFosters =
     data || [];
 
 
   document
     .getElementById("mFosters")
     .textContent =
-      fosters.length;
+      allFosters.length;
 
 
   document
     .getElementById("dashFosters")
     .textContent =
-      fosters.length;
+      allFosters.length;
 
+
+  renderFosters(allFosters);
+
+}
+
+
+/* =========================================================
+   RENDER FOSTERS
+========================================================= */
+
+function renderFosters(fosters){
 
   const body =
-    document
-      .getElementById("fostersBody");
+    document.getElementById("fostersBody");
+
+
+  if(!body){
+    return;
+  }
 
 
   if(!fosters.length){
@@ -2910,11 +3132,10 @@ async function loadFosters(){
       `<tr>
 
         <td
-          colspan="4"
+          colspan="5"
           class="empty"
         >
-          No foster profiles have
-          been created yet.
+          No foster homes have been entered yet.
         </td>
 
       </tr>`;
@@ -2924,38 +3145,582 @@ async function loadFosters(){
 
 
   body.innerHTML =
-    fosters.map(f => `
+    fosters.map(f => {
 
-      <tr>
+      const name =
+        `${f.first_name || ""} ${f.last_name || ""}`
+          .trim() ||
+        "Unnamed Foster";
 
-        <td>
-          ${escapeHtml(
-            f.id || "—"
-          )}
-        </td>
 
-        <td>
-          ${escapeHtml(
-            f.city || "—"
-          )}
-        </td>
+      const location =
+        [
+          f.city,
+          f.state
+        ]
+        .filter(Boolean)
+        .join(", ") ||
+        "Not entered";
 
-        <td>
-          ${escapeHtml(
-            f.availability || "—"
-          )}
-        </td>
 
-        <td>
-          ${f.maximum_dogs || 0}
-        </td>
+      const availability =
+        f.availability ||
+        "unknown";
 
-      </tr>
 
-    `).join("");
+      const capacity =
+        f.max_dogs ??
+        0;
+
+
+      const transportation =
+        f.transportation_available
+          ? "Available"
+          : "No";
+
+
+      return `
+
+        <tr>
+
+          <td>
+
+            <strong
+              style="
+                color:var(--blue);
+                cursor:pointer;
+              "
+              onclick="editFoster('${escapeHtml(f.id)}')"
+            >
+              ${escapeHtml(name)}
+            </strong>
+
+          </td>
+
+
+          <td>
+            ${escapeHtml(location)}
+          </td>
+
+
+          <td>
+
+            <span class="pill ${
+              availability === "available"
+                ? "green"
+                : "blue"
+            }">
+
+              ${escapeHtml(
+                availability
+                  .replaceAll("_"," ")
+                  .toUpperCase()
+              )}
+
+            </span>
+
+          </td>
+
+
+          <td>
+            ${escapeHtml(String(capacity))}
+          </td>
+
+
+          <td>
+            ${transportation}
+          </td>
+
+        </tr>
+
+      `;
+
+    }).join("");
 
 }
 
+
+/* =========================================================
+   FILTER FOSTERS
+========================================================= */
+
+function filterFosters(){
+
+  const input =
+    document.getElementById("fosterSearch");
+
+
+  const q =
+    input
+      ? input.value.toLowerCase().trim()
+      : "";
+
+
+  renderFosters(
+
+    allFosters.filter(f => {
+
+      const searchable = `
+
+        ${f.first_name || ""}
+
+        ${f.last_name || ""}
+
+        ${f.city || ""}
+
+        ${f.state || ""}
+
+        ${f.zip || ""}
+
+        ${f.availability || ""}
+
+      `.toLowerCase();
+
+
+      return searchable.includes(q);
+
+    })
+
+  );
+
+}
+
+
+/* =========================================================
+   OPEN FOSTER FORM
+========================================================= */
+
+function openFosterForm(){
+
+  editingFosterId = null;
+
+
+  document
+    .getElementById("fosterFormTitle")
+    .textContent =
+      "🏡 Add Foster";
+
+
+  document
+    .getElementById("fosterForm")
+    .style.display =
+      "block";
+
+
+  showPage("fosters");
+
+
+  document
+    .getElementById("fosterFirstName")
+    .focus();
+
+}
+
+
+/* =========================================================
+   CLOSE FOSTER FORM
+========================================================= */
+
+function closeFosterForm(){
+
+  editingFosterId = null;
+
+
+  document
+    .getElementById("fosterForm")
+    .style.display =
+      "none";
+
+
+  document
+    .getElementById("fosterFirstName")
+    .value = "";
+
+
+  document
+    .getElementById("fosterLastName")
+    .value = "";
+
+
+  document
+    .getElementById("fosterAddress")
+    .value = "";
+
+
+  document
+    .getElementById("fosterCity")
+    .value = "";
+
+
+  document
+    .getElementById("fosterState")
+    .value = "";
+
+
+  document
+    .getElementById("fosterZip")
+    .value = "";
+
+
+  document
+    .getElementById("householdDogs")
+    .value = "0";
+
+
+  document
+    .getElementById("householdCats")
+    .value = "0";
+
+
+  document
+    .getElementById("householdChildren")
+    .value = "0";
+
+
+  document
+    .getElementById("maxDogs")
+    .value = "1";
+
+
+  document
+    .getElementById("transportation")
+    .value = "";
+
+
+  document
+    .getElementById("transportationAvailable")
+    .value = "true";
+
+
+  document
+    .getElementById("fosterAvailability")
+    .value = "available";
+
+
+  document
+    .getElementById("fosterFormTitle")
+    .textContent =
+      "🏡 Add Foster";
+
+}
+
+
+/* =========================================================
+   EDIT FOSTER
+========================================================= */
+
+function editFoster(id){
+
+  const foster =
+    allFosters.find(
+      f => String(f.id) === String(id)
+    );
+
+
+  if(!foster){
+
+    alert(
+      "Foster record could not be found."
+    );
+
+    return;
+  }
+
+
+  editingFosterId =
+    foster.id;
+
+
+  document
+    .getElementById("fosterFirstName")
+    .value =
+      foster.first_name || "";
+
+
+  document
+    .getElementById("fosterLastName")
+    .value =
+      foster.last_name || "";
+
+
+  document
+    .getElementById("fosterAddress")
+    .value =
+      foster.address || "";
+
+
+  document
+    .getElementById("fosterCity")
+    .value =
+      foster.city || "";
+
+
+  document
+    .getElementById("fosterState")
+    .value =
+      foster.state || "";
+
+
+  document
+    .getElementById("fosterZip")
+    .value =
+      foster.zip || "";
+
+
+  document
+    .getElementById("householdDogs")
+    .value =
+      foster.household_dogs ?? 0;
+
+
+  document
+    .getElementById("householdCats")
+    .value =
+      foster.household_cats ?? 0;
+
+
+  document
+    .getElementById("householdChildren")
+    .value =
+      foster.household_children ?? 0;
+
+
+  document
+    .getElementById("maxDogs")
+    .value =
+      foster.max_dogs ?? 1;
+
+
+  document
+    .getElementById("transportation")
+    .value =
+      foster.transportation || "";
+
+
+  document
+    .getElementById("transportationAvailable")
+    .value =
+      foster.transportation_available
+        ? "true"
+        : "false";
+
+
+  document
+    .getElementById("fosterAvailability")
+    .value =
+      foster.availability ||
+      "available";
+
+
+  document
+    .getElementById("fosterFormTitle")
+    .textContent =
+      "✏️ Edit Foster";
+
+
+  document
+    .getElementById("fosterForm")
+    .style.display =
+      "block";
+
+
+  showPage("fosters");
+
+
+  document
+    .getElementById("fosterFirstName")
+    .focus();
+
+}
+
+
+/* =========================================================
+   SAVE FOSTER
+========================================================= */
+
+async function saveFoster(){
+
+  const firstName =
+    document
+      .getElementById("fosterFirstName")
+      .value
+      .trim();
+
+
+  const lastName =
+    document
+      .getElementById("fosterLastName")
+      .value
+      .trim();
+
+
+  if(!firstName && !lastName){
+
+    alert(
+      "Please enter the foster's first or last name."
+    );
+
+    return;
+  }
+
+
+  const fosterData = {
+
+    first_name:
+      firstName || null,
+
+    last_name:
+      lastName || null,
+
+    address:
+      document
+        .getElementById("fosterAddress")
+        .value
+        .trim() || null,
+
+    city:
+      document
+        .getElementById("fosterCity")
+        .value
+        .trim() || null,
+
+    state:
+      document
+        .getElementById("fosterState")
+        .value
+        .trim() || null,
+
+    zip:
+      document
+        .getElementById("fosterZip")
+        .value
+        .trim() || null,
+
+    household_dogs:
+      Number(
+        document
+          .getElementById("householdDogs")
+          .value
+      ) || 0,
+
+    household_cats:
+      Number(
+        document
+          .getElementById("householdCats")
+          .value
+      ) || 0,
+
+    household_children:
+      Number(
+        document
+          .getElementById("householdChildren")
+          .value
+      ) || 0,
+
+    max_dogs:
+      Number(
+        document
+          .getElementById("maxDogs")
+          .value
+      ) || 1,
+
+    transportation:
+      document
+        .getElementById("transportation")
+        .value || null,
+
+    transportation_available:
+      document
+        .getElementById("transportationAvailable")
+        .value === "true",
+
+    availability:
+      document
+        .getElementById("fosterAvailability")
+        .value
+
+  };
+
+
+  /* ==========================================
+     UPDATE
+  ========================================== */
+
+  if(editingFosterId){
+
+    const {
+      error
+    } = await client
+      .from("fosters")
+      .update(fosterData)
+      .eq(
+        "id",
+        editingFosterId
+      );
+
+
+    if(error){
+
+      alert(
+        "Unable to update foster:\n\n" +
+        error.message
+      );
+
+      console.error(error);
+
+      return;
+    }
+
+
+    alert(
+      "Foster updated successfully!"
+    );
+
+  }
+
+
+  /* ==========================================
+     INSERT
+  ========================================== */
+
+  else{
+
+    const {
+      error
+    } = await client
+      .from("fosters")
+      .insert(fosterData);
+
+
+    if(error){
+
+      alert(
+        "Unable to save foster:\n\n" +
+        error.message
+      );
+
+      console.error(error);
+
+      return;
+    }
+
+
+    alert(
+      "Foster added successfully!"
+    );
+
+  }
+
+
+  closeFosterForm();
+
+
+  await loadFosters();
+
+
+  showPage("fosters");
+
+}
 
 /* =========================================================
    PLACEMENTS
