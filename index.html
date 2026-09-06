@@ -3167,7 +3167,7 @@ function renderFosters(fosters){
 
 
       const capacity =
-        f.max_dogs ??
+        f.maximum_dogs ??
         0;
 
 
@@ -3486,7 +3486,7 @@ function editFoster(id){
   document
     .getElementById("maxDogs")
     .value =
-      foster.max_dogs ?? 1;
+      foster.maximum_dogs ?? 1;
 
 
   document
@@ -3615,7 +3615,7 @@ async function saveFoster(){
           .value
       ) || 0,
 
-    max_dogs:
+    maximum_dogs:
       Number(
         document
           .getElementById("maxDogs")
