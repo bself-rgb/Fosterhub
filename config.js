@@ -7,13 +7,14 @@ const SUPABASE_PUBLISHABLE_KEY =
   "sb_publishable_ig8sZiYigMY4ANhtlOFFKA_HGNPsP-u";
 
 /*
-  Login safety layer
-  ------------------
-  This keeps the existing app code intact while making the sign-in button
-  fail visibly instead of appearing to do nothing if an exception occurs.
+  Login safety + foster schema compatibility layer
+  -------------------------------------------------
+  The fosters table uses transportation_available. Older UI code also
+  attempted to send a separate transportation field, which does not exist
+  in the Supabase schema. Strip that unsupported field before foster writes.
 */
 
-(function installLoginSafety(){
+(function installHubSafety(){
   if(!window.supabase || !window.supabase.createClient){
     console.error("Second Leash: Supabase library did not load.");
     return;
@@ -23,7 +24,44 @@ const SUPABASE_PUBLISHABLE_KEY =
 
   window.supabase.createClient = function(url, key, options){
     const client = originalCreateClient.call(this, url, key, options);
+
     window.secondLeashClient = client;
+
+    const originalFrom = client.from.bind(client);
+
+    client.from = function(table){
+      const query = originalFrom(table);
+
+      if(table === "fosters"){
+        const originalInsert = query.insert.bind(query);
+        const originalUpdate = query.update.bind(query);
+
+        const cleanFosterData = function(values){
+          if(Array.isArray(values)){
+            return values.map(cleanFosterData);
+          }
+
+          if(values && typeof values === "object"){
+            const cleaned = {...values};
+            delete cleaned.transportation;
+            return cleaned;
+          }
+
+          return values;
+        };
+
+        query.insert = function(values, ...args){
+          return originalInsert(cleanFosterData(values), ...args);
+        };
+
+        query.update = function(values, ...args){
+          return originalUpdate(cleanFosterData(values), ...args);
+        };
+      }
+
+      return query;
+    };
+
     return client;
   };
 
