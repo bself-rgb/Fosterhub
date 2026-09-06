@@ -41,10 +41,8 @@ const SUPABASE_PUBLISHABLE_KEY =
         if(values && typeof values === "object"){
           const cleaned = {...values};
 
-          // This is not a column in the fosters table.
           delete cleaned.transportation;
 
-          // The id column is required for inserts.
           if(forInsert && !cleaned.id){
             if(window.crypto && typeof window.crypto.randomUUID === "function"){
               cleaned.id = window.crypto.randomUUID();
@@ -59,8 +57,6 @@ const SUPABASE_PUBLISHABLE_KEY =
         return values;
       };
 
-      // Use a Proxy so the override works even though Supabase exposes
-      // insert/update through the query builder's prototype.
       return new Proxy(query, {
         get(target, property, receiver){
           if(property === "insert"){
@@ -94,7 +90,7 @@ const SUPABASE_PUBLISHABLE_KEY =
   /*
     Login safety.
     Intercept the login form before the older app handler so a failed
-    request produces a visible, useful error instead of doing nothing.
+    request produces a visible, useful error instead of appearing to do nothing.
   */
   document.addEventListener("DOMContentLoaded", function(){
     const form = document.getElementById("loginForm");
