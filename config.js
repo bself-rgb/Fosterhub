@@ -1,7 +1,7 @@
 // Second Leash Hub configuration
 // Public/publishable Supabase key only. Never put a service_role/secret key here.
 
-const SUPABASE_URL = "https://qkftfbatpijxrhaeaymj.supabase.co";
+const SUPABASE_URL = "https://qkftfbatpijxrheaymj.supabase.co";
 
 const SUPABASE_PUBLISHABLE_KEY =
   "sb_publishable_ig8sZiYigMY4ANhtlOFFKA_HGNPsP-u";
@@ -9,9 +9,10 @@ const SUPABASE_PUBLISHABLE_KEY =
 /*
   Login safety + foster schema compatibility layer
   -------------------------------------------------
-  The fosters table uses transportation_available. Older UI code also
-  attempted to send a separate transportation field, which does not exist
-  in the Supabase schema. Strip that unsupported field before foster writes.
+  The fosters table uses transportation_available and requires an id.
+  Older UI code attempted to send a separate transportation field and did
+  not provide an id when inserting. Normalize both issues here so the
+  existing UI can keep working without duplicating the logic.
 */
 
 (function installHubSafety(){
@@ -36,14 +37,23 @@ const SUPABASE_PUBLISHABLE_KEY =
         const originalInsert = query.insert.bind(query);
         const originalUpdate = query.update.bind(query);
 
-        const cleanFosterData = function(values){
+        const cleanFosterData = function(values, forInsert = false){
           if(Array.isArray(values)){
-            return values.map(cleanFosterData);
+            return values.map(value => cleanFosterData(value, forInsert));
           }
 
           if(values && typeof values === "object"){
             const cleaned = {...values};
+
+            // The actual table column is transportation_available.
             delete cleaned.transportation;
+
+            // The fosters table requires a non-null id and does not appear
+            // to have a database default. Generate one for new records.
+            if(forInsert && !cleaned.id){
+              cleaned.id = crypto.randomUUID();
+            }
+
             return cleaned;
           }
 
@@ -51,11 +61,11 @@ const SUPABASE_PUBLISHABLE_KEY =
         };
 
         query.insert = function(values, ...args){
-          return originalInsert(cleanFosterData(values), ...args);
+          return originalInsert(cleanFosterData(values, true), ...args);
         };
 
         query.update = function(values, ...args){
-          return originalUpdate(cleanFosterData(values), ...args);
+          return originalUpdate(cleanFosterData(values, false), ...args);
         };
       }
 
