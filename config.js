@@ -1,6 +1,91 @@
 // Second Leash Hub configuration
+// Public/publishable Supabase key only. Never put a service_role/secret key here.
 
 const SUPABASE_URL = "https://qkftfbatpijxrhaeaymj.supabase.co";
 
 const SUPABASE_PUBLISHABLE_KEY =
   "sb_publishable_ig8sZiYigMY4ANhtlOFFKA_HGNPsP-u";
+
+/*
+  Login safety layer
+  ------------------
+  This keeps the existing app code intact while making the sign-in button
+  fail visibly instead of appearing to do nothing if an exception occurs.
+*/
+
+(function installLoginSafety(){
+  if(!window.supabase || !window.supabase.createClient){
+    console.error("Second Leash: Supabase library did not load.");
+    return;
+  }
+
+  const originalCreateClient = window.supabase.createClient;
+
+  window.supabase.createClient = function(url, key, options){
+    const client = originalCreateClient.call(this, url, key, options);
+    window.secondLeashClient = client;
+    return client;
+  };
+
+  document.addEventListener("DOMContentLoaded", function(){
+    const form = document.getElementById("loginForm");
+    const button = form?.querySelector("button[type='submit']");
+    const errorBox = document.getElementById("loginError");
+
+    if(!form || !button || !errorBox){
+      return;
+    }
+
+    form.addEventListener("submit", async function(e){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+
+      errorBox.style.display = "none";
+      errorBox.textContent = "";
+      button.disabled = true;
+      button.textContent = "Signing in...";
+
+      try{
+        const client = window.secondLeashClient;
+
+        if(!client){
+          throw new Error("The Supabase client was not initialized. Please refresh the page.");
+        }
+
+        const email = document.getElementById("email")?.value.trim();
+        const password = document.getElementById("password")?.value || "";
+
+        if(!email || !password){
+          throw new Error("Please enter your email and password.");
+        }
+
+        const result = await client.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if(result.error){
+          throw result.error;
+        }
+
+        if(!result.data?.user){
+          throw new Error("Supabase did not return a signed-in user.");
+        }
+
+        if(typeof window.startApp === "function"){
+          await window.startApp(result.data.user);
+        }else{
+          throw new Error("The Hub application did not finish loading. Please refresh the page.");
+        }
+
+      }catch(error){
+        console.error("Second Leash sign-in error:", error);
+        errorBox.textContent = error?.message || String(error) || "Sign-in failed.";
+        errorBox.style.display = "block";
+      }finally{
+        button.disabled = false;
+        button.textContent = "Sign In";
+      }
+    }, true);
+  });
+})();
