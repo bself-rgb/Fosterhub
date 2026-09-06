@@ -7,14 +7,11 @@ const SUPABASE_PUBLISHABLE_KEY =
   "sb_publishable_ig8sZiYigMY4ANhtlOFFKA_HGNPsP-u";
 
 /*
-  Login safety + foster schema compatibility layer
-  -------------------------------------------------
-  The fosters table uses transportation_available and requires an id.
-  Older UI code attempted to send a separate transportation field and did
-  not provide an id when inserting. Normalize both issues here so the
-  existing UI can keep working without duplicating the logic.
+  Foster schema compatibility layer.
+  The fosters table requires id and uses transportation_available.
+  The older form also creates a temporary transportation field; that field
+  must never be sent to Supabase.
 */
-
 (function installHubSafety(){
   if(!window.supabase || !window.supabase.createClient){
     console.error("Second Leash: Supabase library did not load.");
@@ -25,7 +22,6 @@ const SUPABASE_PUBLISHABLE_KEY =
 
   window.supabase.createClient = function(url, key, options){
     const client = originalCreateClient.call(this, url, key, options);
-
     window.secondLeashClient = client;
 
     const originalFrom = client.from.bind(client);
@@ -33,107 +29,65 @@ const SUPABASE_PUBLISHABLE_KEY =
     client.from = function(table){
       const query = originalFrom(table);
 
-      if(table === "fosters"){
-        const originalInsert = query.insert.bind(query);
-        const originalUpdate = query.update.bind(query);
-
-        const cleanFosterData = function(values, forInsert = false){
-          if(Array.isArray(values)){
-            return values.map(value => cleanFosterData(value, forInsert));
-          }
-
-          if(values && typeof values === "object"){
-            const cleaned = {...values};
-
-            // The actual table column is transportation_available.
-            delete cleaned.transportation;
-
-            // The fosters table requires a non-null id and does not appear
-            // to have a database default. Generate one for new records.
-            if(forInsert && !cleaned.id){
-              cleaned.id = crypto.randomUUID();
-            }
-
-            return cleaned;
-          }
-
-          return values;
-        };
-
-        query.insert = function(values, ...args){
-          return originalInsert(cleanFosterData(values, true), ...args);
-        };
-
-        query.update = function(values, ...args){
-          return originalUpdate(cleanFosterData(values, false), ...args);
-        };
+      if(table !== "fosters"){
+        return query;
       }
 
-      return query;
+      const cleanFosterData = function(values, forInsert){
+        if(Array.isArray(values)){
+          return values.map(value => cleanFosterData(value, forInsert));
+        }
+
+        if(values && typeof values === "object"){
+          const cleaned = {...values};
+
+          // This is not a column in the fosters table.
+          delete cleaned.transportation;
+
+          // The id column is required for inserts.
+          if(forInsert && !cleaned.id){
+            if(window.crypto && typeof window.crypto.randomUUID === "function"){
+              cleaned.id = window.crypto.randomUUID();
+            }else{
+              cleaned.id = "sl-" + Date.now() + "-" + Math.random().toString(36).slice(2);
+            }
+          }
+
+          return cleaned;
+        }
+
+        return values;
+      };
+
+      // Use a Proxy so the override works even though Supabase exposes
+      // insert/update through the query builder's prototype.
+      return new Proxy(query, {
+        get(target, property, receiver){
+          if(property === "insert"){
+            return function(values, ...args){
+              return target.insert.call(
+                target,
+                cleanFosterData(values, true),
+                ...args
+              );
+            };
+          }
+
+          if(property === "update"){
+            return function(values, ...args){
+              return target.update.call(
+                target,
+                cleanFosterData(values, false),
+                ...args
+              );
+            };
+          }
+
+          return Reflect.get(target, property, receiver);
+        }
+      });
     };
 
     return client;
   };
-
-  document.addEventListener("DOMContentLoaded", function(){
-    const form = document.getElementById("loginForm");
-    const button = form?.querySelector("button[type='submit']");
-    const errorBox = document.getElementById("loginError");
-
-    if(!form || !button || !errorBox){
-      return;
-    }
-
-    form.addEventListener("submit", async function(e){
-      e.preventDefault();
-      e.stopImmediatePropagation();
-
-      errorBox.style.display = "none";
-      errorBox.textContent = "";
-      button.disabled = true;
-      button.textContent = "Signing in...";
-
-      try{
-        const client = window.secondLeashClient;
-
-        if(!client){
-          throw new Error("The Supabase client was not initialized. Please refresh the page.");
-        }
-
-        const email = document.getElementById("email")?.value.trim();
-        const password = document.getElementById("password")?.value || "";
-
-        if(!email || !password){
-          throw new Error("Please enter your email and password.");
-        }
-
-        const result = await client.auth.signInWithPassword({
-          email,
-          password
-        });
-
-        if(result.error){
-          throw result.error;
-        }
-
-        if(!result.data?.user){
-          throw new Error("Supabase did not return a signed-in user.");
-        }
-
-        if(typeof window.startApp === "function"){
-          await window.startApp(result.data.user);
-        }else{
-          throw new Error("The Hub application did not finish loading. Please refresh the page.");
-        }
-
-      }catch(error){
-        console.error("Second Leash sign-in error:", error);
-        errorBox.textContent = error?.message || String(error) || "Sign-in failed.";
-        errorBox.style.display = "block";
-      }finally{
-        button.disabled = false;
-        button.textContent = "Sign In";
-      }
-    }, true);
-  });
 })();
