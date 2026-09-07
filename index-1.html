@@ -1,0 +1,4149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Second Leash Hub</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+
+<style>
+
+:root{
+  --blue:#0d8fc4;
+  --blue2:#0875a5;
+  --navy:#16233d;
+  --gray:#eef1f4;
+  --line:#dbe1e7;
+  --text:#253247;
+  --muted:#6d7888;
+  --white:#fff;
+  --danger:#c94b4b;
+  --good:#2e8b62;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  background:#f5f7f9;
+  color:var(--text);
+}
+
+/* =========================
+   LOGIN
+========================= */
+
+#loginScreen{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:linear-gradient(135deg,#eef8fc,#f5f7f9);
+}
+
+.login-card{
+  width:100%;
+  max-width:420px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:32px;
+  box-shadow:0 10px 35px #13233d12;
+  text-align:center;
+}
+
+.login-card img{
+  width:82px;
+  height:82px;
+  object-fit:contain;
+  border-radius:16px;
+  margin-bottom:12px;
+}
+
+.login-card h1{
+  margin:0;
+  font-size:25px;
+}
+
+.login-card p{
+  color:var(--muted);
+  font-size:13px;
+  margin:6px 0 24px;
+}
+
+.form-group{
+  text-align:left;
+  margin-bottom:14px;
+}
+
+.form-group label{
+  display:block;
+  font-size:12px;
+  font-weight:700;
+  margin-bottom:6px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+  width:100%;
+  padding:12px;
+  border:1px solid var(--line);
+  border-radius:9px;
+  font-size:14px;
+  font-family:inherit;
+}
+
+.login-btn{
+  width:100%;
+  border:0;
+  background:var(--blue);
+  color:#fff;
+  padding:12px;
+  border-radius:9px;
+  font-weight:700;
+  cursor:pointer;
+  margin-top:5px;
+}
+
+.login-btn:hover{
+  background:var(--blue2);
+}
+
+#loginError{
+  display:none;
+  background:#fdeaea;
+  color:#a63b3b;
+  border:1px solid #f2caca;
+  padding:10px;
+  border-radius:9px;
+  margin-bottom:14px;
+  font-size:13px;
+}
+
+/* =========================
+   APPLICATION
+========================= */
+
+#app{
+  display:none;
+}
+
+.app{
+  display:flex;
+  min-height:100vh;
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.side{
+  width:250px;
+  background:var(--navy);
+  color:#fff;
+  padding:20px 14px;
+  position:fixed;
+  inset:0 auto 0 0;
+  overflow-y:auto;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:6px 10px 24px;
+}
+
+.brand img{
+  width:48px;
+  height:48px;
+  object-fit:contain;
+  background:#fff;
+  border-radius:12px;
+}
+
+.brand strong{
+  font-size:18px;
+}
+
+.brand span{
+  display:block;
+  font-size:11px;
+  opacity:.7;
+  margin-top:2px;
+}
+
+.nav button{
+  width:100%;
+  border:0;
+  background:transparent;
+  color:#dfe8f2;
+  text-align:left;
+  padding:11px 12px;
+  border-radius:10px;
+  margin:2px 0;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.nav button.active,
+.nav button:hover{
+  background:#233957;
+  color:#fff;
+}
+
+.nav .section{
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:1.3px;
+  color:#8ea0b7;
+  margin:18px 12px 6px;
+}
+
+/* =========================
+   MAIN
+========================= */
+
+.main{
+  margin-left:250px;
+  width:calc(100% - 250px);
+  padding:24px;
+  max-width:1500px;
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.top h1{
+  margin:0;
+  font-size:27px;
+}
+
+.top p{
+  margin:4px 0 0;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.actions{
+  display:flex;
+  gap:8px;
+}
+
+.btn{
+  border:0;
+  border-radius:9px;
+  padding:10px 14px;
+  cursor:pointer;
+  font-weight:700;
+  font-family:inherit;
+}
+
+.primary{
+  background:var(--blue);
+  color:#fff;
+}
+
+.primary:hover{
+  background:var(--blue2);
+}
+
+.secondary{
+  background:#fff;
+  border:1px solid var(--line);
+  color:var(--text);
+}
+
+.secondary:hover{
+  background:#f5f7f9;
+}
+
+/* =========================
+   DASHBOARD
+========================= */
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+}
+
+.card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:17px;
+  box-shadow:0 2px 8px #13233d08;
+}
+
+.metric{
+  font-size:27px;
+  font-weight:800;
+}
+
+.label{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:3px;
+}
+
+.grid2{
+  display:grid;
+  grid-template-columns:1.4fr 1fr;
+  gap:16px;
+  margin-top:16px;
+}
+
+.panel{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:18px;
+}
+
+.panel h2{
+  font-size:16px;
+  margin:0 0 14px;
+}
+
+.row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px 0;
+  border-bottom:1px solid #edf0f3;
+}
+
+.row:last-child{
+  border-bottom:0;
+}
+
+.pill{
+  display:inline-block;
+  font-size:11px;
+  padding:5px 8px;
+  border-radius:999px;
+  font-weight:700;
+}
+
+.green{
+  background:#e8f6ef;
+  color:#23714e;
+}
+
+.blue{
+  background:#e6f5fb;
+  color:#086b96;
+}
+
+/* =========================
+   PAGES
+========================= */
+
+.section-page{
+  display:none;
+}
+
+.section-page.active{
+  display:block;
+}
+
+/* =========================
+   TOOLBAR
+========================= */
+
+.toolbar{
+  display:flex;
+  gap:10px;
+  margin-bottom:14px;
+}
+
+.search{
+  flex:1;
+  border:1px solid var(--line);
+  border-radius:9px;
+  padding:11px 12px;
+  background:#fff;
+  font-family:inherit;
+}
+
+/* =========================
+   TABLES
+========================= */
+
+.table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+.table th,
+.table td{
+  text-align:left;
+  padding:12px 10px;
+  border-bottom:1px solid #edf0f3;
+  font-size:13px;
+}
+
+.table th{
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+  color:var(--muted);
+}
+
+.table tbody tr:hover{
+  background:#fafcfd;
+}
+
+.empty{
+  padding:30px;
+  text-align:center;
+  color:var(--muted);
+}
+
+/* =========================
+   USER
+========================= */
+
+.user-box{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:0 10px 14px;
+}
+
+.user-avatar{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  background:#e6f5fb;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--blue2);
+  font-weight:800;
+}
+
+.user-info{
+  font-size:12px;
+}
+
+.user-info strong{
+  display:block;
+}
+
+.user-info span{
+  color:#8ea0b7;
+}
+
+/* =========================
+   LOGOUT
+========================= */
+
+.logout{
+  margin-top:20px;
+  border-top:1px solid #ffffff18;
+  padding-top:15px;
+}
+
+.logout button{
+  width:100%;
+  border:1px solid #ffffff20;
+  background:transparent;
+  color:#dfe8f2;
+  padding:9px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.logout button:hover{
+  background:#233957;
+}
+
+/* =========================
+   DOG PROFILE
+========================= */
+
+.profile-header{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-bottom:20px;
+}
+
+.profile-icon{
+  width:70px;
+  height:70px;
+  border-radius:16px;
+  background:#e6f5fb;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:34px;
+}
+
+.profile-title{
+  font-size:24px;
+  margin:0 0 5px;
+}
+
+.profile-number{
+  font-size:12px;
+  color:var(--muted);
+}
+
+.profile-status{
+  margin-left:auto;
+}
+
+.profile-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+
+/* =========================
+   FORM
+========================= */
+
+.dog-form-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:900px){
+
+  .side{
+    width:70px;
+    padding:12px 8px;
+  }
+
+  .brand div,
+  .nav button span,
+  .nav .section,
+  .user-info{
+    display:none;
+  }
+
+  .brand{
+    padding:5px;
+    justify-content:center;
+  }
+
+  .brand img{
+    width:46px;
+  }
+
+  .user-box{
+    justify-content:center;
+    padding:10px 0;
+  }
+
+  .nav button{
+    text-align:center;
+    font-size:0;
+  }
+
+  .nav button:first-letter{
+    font-size:18px;
+  }
+
+  .main{
+    margin-left:70px;
+    width:calc(100% - 70px);
+    padding:16px;
+  }
+
+  .cards{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .grid2{
+    grid-template-columns:1fr;
+  }
+
+  .profile-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+}
+
+@media(max-width:600px){
+
+  .top{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:12px;
+  }
+
+  .actions{
+    width:100%;
+  }
+
+  .actions button{
+    flex:1;
+  }
+
+  .cards{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .dog-form-grid{
+    grid-template-columns:1fr;
+  }
+
+  .profile-grid{
+    grid-template-columns:1fr;
+  }
+
+  .profile-header{
+    flex-wrap:wrap;
+  }
+
+  .profile-status{
+    margin-left:0;
+  }
+
+  .table{
+    min-width:650px;
+  }
+
+  .panel{
+    overflow-x:auto;
+  }
+
+}
+
+/* =========================
+   LOADING
+========================= */
+
+.loading{
+  opacity:.6;
+  pointer-events:none;
+}
+
+
+
+/* =========================
+   HUB EXTENSIONS
+========================= */
+.module-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:16px}
+.stat-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
+.stat-card .big{font-size:28px;font-weight:800;margin-top:4px}
+.muted{color:var(--muted);font-size:12px}
+.form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.form-grid .wide{grid-column:1/-1}
+.inline-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.table-wrap{overflow:auto}
+.small-btn{padding:7px 10px;font-size:12px}
+.danger{background:#fdeaea;color:#9e3333;border:1px solid #f2caca}
+.warning{background:#fff7df;color:#7b5a00;border:1px solid #f0dfaa}
+.success{background:#eaf7f0;color:#246e4d;border:1px solid #c9ead8}
+.setup-note{padding:12px;border-radius:10px;background:#f6f8fa;border:1px dashed #cbd4de;color:var(--muted);font-size:13px;margin-top:12px}
+.kpi-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}
+@media(max-width:1000px){.module-grid,.form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi-row{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.module-grid,.form-grid,.kpi-row{grid-template-columns:1fr}.form-grid .wide{grid-column:auto}}
+
+</style>
+</head>
+
+<body>
+
+
+<!-- =========================================================
+     LOGIN
+========================================================= -->
+
+<div id="loginScreen">
+
+  <div class="login-card">
+
+    <img
+      src="assets/logo.png"
+      alt="Second Leash"
+    >
+
+    <h1>Second Leash Hub</h1>
+
+    <p>
+      Secure operations & case management
+    </p>
+
+    <div id="loginError"></div>
+
+    <form id="loginForm">
+
+      <div class="form-group">
+
+        <label for="email">
+          Email
+        </label>
+
+        <input
+          id="email"
+          type="email"
+          autocomplete="email"
+          required
+        >
+
+      </div>
+
+      <div class="form-group">
+
+        <label for="password">
+          Password
+        </label>
+
+        <input
+          id="password"
+          type="password"
+          autocomplete="current-password"
+          required
+        >
+
+      </div>
+
+      <button
+        class="login-btn"
+        type="submit"
+      >
+        Sign In
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<!-- =========================================================
+     APPLICATION
+========================================================= -->
+
+<div id="app">
+
+<div class="app">
+
+
+<!-- =========================================================
+     SIDEBAR
+========================================================= -->
+
+<aside class="side">
+
+  <div class="brand">
+
+    <img
+      src="assets/logo.png"
+      alt="Second Leash"
+    >
+
+    <div>
+
+      <strong>
+        Second Leash
+      </strong>
+
+      <span>
+        Hub • Operations
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <div class="user-box">
+
+    <div
+      class="user-avatar"
+      id="userAvatar"
+    >
+      B
+    </div>
+
+    <div class="user-info">
+
+      <strong id="userName">
+        User
+      </strong>
+
+      <span id="userRole">
+        Loading...
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <nav class="nav">
+
+    <div class="section">
+      Main
+    </div>
+
+    <button
+      class="active"
+      data-page="dashboard"
+    >
+      🏠 <span>Dashboard</span>
+    </button>
+
+    <button data-page="dogs">
+      🐶 <span>Dogs</span>
+    </button>
+
+    <button data-page="fosters">
+      🏡 <span>Fosters</span>
+    </button>
+
+    <button data-page="owners">
+      👤 <span>Owners</span>
+    </button>
+
+    <button data-page="placements">
+      🔄 <span>Placements</span>
+    </button>
+
+
+    <div class="section">
+      Care
+    </div>
+
+    <button data-page="checkins">
+      📋 <span>Foster Check-ins</span>
+    </button>
+
+    <button data-page="medical">
+      💊 <span>Medical</span>
+    </button>
+
+    <button data-page="expenses">
+      💰 <span>Expenses</span>
+    </button>
+
+    <button data-page="documents">
+      📁 <span>Documents</span>
+    </button>
+
+
+    <div class="section">
+      Community
+    </div>
+
+    <button data-page="volunteers">
+      🙋 <span>Volunteers</span>
+    </button>
+
+    <button data-page="needs">
+      📢 <span>Volunteer Needs</span>
+    </button>
+
+
+    <div class="section">
+      Admin
+    </div>
+
+    <button data-page="reports">
+      📊 <span>Reports</span>
+    </button>
+
+    <button data-page="users">
+      ⚙️ <span>Users & Permissions</span>
+    </button>
+
+  </nav>
+
+
+  <div class="logout">
+
+    <button onclick="logout()">
+      Sign Out
+    </button>
+
+  </div>
+
+</aside>
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main class="main">
+
+
+  <div class="top">
+
+    <div>
+
+      <h1 id="title">
+        Second Leash Hub
+      </h1>
+
+      <p id="subtitle">
+        Temporary care, stability, reunification.
+      </p>
+
+    </div>
+
+    <div class="actions">
+
+      <button
+        class="btn secondary"
+        onclick="loadDashboard()"
+      >
+        ↻ Refresh
+      </button>
+
+      <button
+        class="btn primary"
+        onclick="openDogForm()"
+      >
+        + Add Dog
+      </button>
+
+    </div>
+
+  </div>
+
+
+<!-- =========================================================
+     DASHBOARD
+========================================================= -->
+
+<section
+  id="dashboard"
+  class="section-page active"
+>
+
+  <div class="cards">
+
+    <div class="card">
+
+      <div
+        class="metric"
+        id="mDogs"
+      >
+        0
+      </div>
+
+      <div class="label">
+        Dogs
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <div
+        class="metric"
+        id="mFosters"
+      >
+        0
+      </div>
+
+      <div class="label">
+        Fosters
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <div
+        class="metric"
+        id="mPlacements"
+      >
+        0
+      </div>
+
+      <div class="label">
+        Active Placements
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <div
+        class="metric"
+        id="mExpenses"
+      >
+        $0
+      </div>
+
+      <div class="label">
+        Tracked Expenses
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="grid2">
+
+    <div class="panel">
+
+      <h2>
+        🐾 Second Leash Operations
+      </h2>
+
+      <div class="row">
+
+        <span>
+          Dogs currently in the system
+        </span>
+
+        <strong id="dashDogs">
+          0
+        </strong>
+
+      </div>
+
+      <div class="row">
+
+        <span>
+          Foster homes
+        </span>
+
+        <strong id="dashFosters">
+          0
+        </strong>
+
+      </div>
+
+      <div class="row">
+
+        <span>
+          Active placements
+        </span>
+
+        <strong id="dashPlacements">
+          0
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="panel">
+
+      <h2>
+        👑 Your Access
+      </h2>
+
+      <div class="row">
+
+        <span>
+          Account
+        </span>
+
+        <strong id="dashEmail">
+        </strong>
+
+      </div>
+
+      <div class="row">
+
+        <span>
+          Role
+        </span>
+
+        <span
+          class="pill blue"
+          id="dashRole"
+        >
+          SUPER ADMIN
+        </span>
+
+      </div>
+
+      <div class="row">
+
+        <span>
+          Status
+        </span>
+
+        <span class="pill green">
+          ACTIVE
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================================================
+     DOGS
+========================================================= -->
+
+<section
+  id="dogs"
+  class="section-page"
+>
+
+
+<!-- DOG FORM -->
+
+<div
+  id="dogForm"
+  class="panel"
+  style="display:none;margin-bottom:16px;"
+>
+
+  <h2>
+    🐶 Add New Dog
+  </h2>
+
+
+  <div class="dog-form-grid">
+
+
+    <div class="form-group">
+
+      <label for="dogName">
+        Dog Name
+      </label>
+
+      <input
+        id="dogName"
+        placeholder="Dog's name"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="dogBreed">
+        Breed / Description
+      </label>
+
+      <input
+        id="dogBreed"
+        placeholder="Breed or mix"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="dogAge">
+        Approximate Age
+      </label>
+
+      <input
+        id="dogAge"
+        placeholder="Example: 3 years"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="dogSex">
+        Sex
+      </label>
+
+      <select id="dogSex">
+
+        <option value="">
+          Select...
+        </option>
+
+        <option value="male">
+          Male
+        </option>
+
+        <option value="female">
+          Female
+        </option>
+
+        <option value="unknown">
+          Unknown
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="dogIntakeDate">
+        Intake Date
+      </label>
+
+      <input
+        id="dogIntakeDate"
+        type="date"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="dogStatus">
+        Status
+      </label>
+
+      <select id="dogStatus">
+
+        <option value="intake">
+          Intake
+        </option>
+
+        <option value="available">
+          Available
+        </option>
+
+        <option value="fostered">
+          Fostered
+        </option>
+
+        <option value="reunification">
+          Reunification
+        </option>
+
+        <option value="returned">
+          Returned
+        </option>
+
+        <option value="closed">
+          Closed
+        </option>
+
+      </select>
+
+    </div>
+
+
+  </div>
+
+
+  <div class="form-group">
+
+    <label for="dogNotes">
+      Notes
+    </label>
+
+    <textarea
+      id="dogNotes"
+      rows="4"
+      placeholder="Important information about this dog..."
+      style="width:100%;resize:vertical;"
+    ></textarea>
+
+  </div>
+
+
+  <div style="display:flex;gap:10px;">
+
+    <button
+      class="btn primary"
+      onclick="saveDog()"
+    >
+      Save Dog
+    </button>
+
+    <button
+      class="btn secondary"
+      onclick="closeDogForm()"
+    >
+      Cancel
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- DOG SEARCH -->
+
+<div class="toolbar">
+
+  <input
+    class="search"
+    id="dogSearch"
+    placeholder="Search dogs..."
+    oninput="filterDogs()"
+  >
+
+  <button
+    class="btn primary"
+    onclick="openDogForm()"
+  >
+    + Add Dog
+  </button>
+
+</div>
+
+
+<!-- DOG TABLE -->
+
+<div class="panel">
+
+<table class="table">
+
+<thead>
+
+<tr>
+
+<th>
+  Dog
+</th>
+
+<th>
+  Breed
+</th>
+
+<th>
+  Status
+</th>
+
+<th>
+  Intake
+</th>
+
+</tr>
+
+</thead>
+
+
+<tbody id="dogsBody">
+
+<tr>
+
+<td
+  colspan="4"
+  class="empty"
+>
+  Loading dogs...
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<!-- =========================================================
+     DOG PROFILE
+========================================================= -->
+
+<section
+  id="dogProfile"
+  class="section-page"
+>
+
+  <div class="toolbar">
+
+    <button
+      class="btn secondary"
+      onclick="showPage('dogs')"
+    >
+      ← Back to Dogs
+    </button>
+
+    <button
+      class="btn primary"
+      onclick="editCurrentDog()"
+    >
+      ✏️ Edit Dog
+    </button>
+
+  </div>
+
+
+  <div class="panel">
+
+    <div class="profile-header">
+
+      <div class="profile-icon">
+        🐶
+      </div>
+
+      <div>
+
+        <h2
+          id="profileDogName"
+          class="profile-title"
+        >
+          Dog
+        </h2>
+
+        <div
+          id="profileDogNumber"
+          class="profile-number"
+        >
+          Second Leash ID
+        </div>
+
+      </div>
+
+      <div class="profile-status">
+
+        <span
+          class="pill blue"
+          id="profileDogStatus"
+        >
+          INTAKE
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="profile-grid">
+
+
+      <div class="card">
+
+        <div class="label">
+          Breed / Description
+        </div>
+
+        <strong id="profileDogBreed">
+          —
+        </strong>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="label">
+          Approximate Age
+        </div>
+
+        <strong id="profileDogAge">
+          —
+        </strong>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="label">
+          Sex
+        </div>
+
+        <strong id="profileDogSex">
+          —
+        </strong>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="label">
+          Intake Date
+        </div>
+
+        <strong id="profileDogIntake">
+          —
+        </strong>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="label">
+          Current Placement
+        </div>
+
+        <strong id="profileDogPlacement">
+          Not placed
+        </strong>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="label">
+          Record Created
+        </div>
+
+        <strong id="profileDogCreated">
+          —
+        </strong>
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+
+  <div class="grid2">
+
+
+    <div class="panel">
+
+      <h2>
+        📝 Case Notes
+      </h2>
+
+      <div
+        id="profileDogNotes"
+        style="
+          min-height:100px;
+          white-space:pre-wrap;
+          color:var(--text);
+        "
+      >
+        No notes recorded.
+      </div>
+
+    </div>
+
+
+    <div class="panel">
+
+      <h2>
+        📋 Case Overview
+      </h2>
+
+
+      <div class="row">
+
+        <span>
+          Current Status
+        </span>
+
+        <strong id="profileOverviewStatus">
+          —
+        </strong>
+
+      </div>
+
+
+      <div class="row">
+
+        <span>
+          Foster Placement
+        </span>
+
+        <strong id="profileOverviewFoster">
+          None
+        </strong>
+
+      </div>
+
+
+      <div class="row">
+
+        <span>
+          Expected Return
+        </span>
+
+        <strong id="profileOverviewReturn">
+          —
+        </strong>
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================================================
+     FOSTERS
+========================================================= -->
+
+<section
+  id="fosters"
+  class="section-page"
+>
+
+  <!-- FOSTER FORM -->
+
+  <div
+    id="fosterForm"
+    class="panel"
+    style="display:none;margin-bottom:16px;"
+  >
+
+    <h2 id="fosterFormTitle">
+      🏡 Add Foster
+    </h2>
+
+    <div class="dog-form-grid">
+
+      <div class="form-group">
+        <label for="fosterFirstName">First Name</label>
+        <input
+          id="fosterFirstName"
+          placeholder="First name"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="fosterLastName">Last Name</label>
+        <input
+          id="fosterLastName"
+          placeholder="Last name"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="fosterAddress">Address</label>
+        <input
+          id="fosterAddress"
+          placeholder="Street address"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="fosterCity">City</label>
+        <input
+          id="fosterCity"
+          placeholder="City"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="fosterState">State</label>
+        <input
+          id="fosterState"
+          placeholder="State"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="fosterZip">ZIP Code</label>
+        <input
+          id="fosterZip"
+          placeholder="ZIP code"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="householdDogs">Dogs in Household</label>
+        <input
+          id="householdDogs"
+          type="number"
+          min="0"
+          value="0"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="householdCats">Cats in Household</label>
+        <input
+          id="householdCats"
+          type="number"
+          min="0"
+          value="0"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="householdChildren">Children in Household</label>
+        <input
+          id="householdChildren"
+          type="number"
+          min="0"
+          value="0"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="maxDogs">Maximum Dogs</label>
+        <input
+          id="maxDogs"
+          type="number"
+          min="1"
+          value="1"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="transportation">Transportation</label>
+        <select id="transportation">
+          <option value="">Select...</option>
+          <option value="own_vehicle">Own vehicle</option>
+          <option value="limited">Limited</option>
+          <option value="none">No transportation</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="transportationAvailable">
+          Transportation Available
+        </label>
+
+        <select id="transportationAvailable">
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="fosterAvailability">
+          Availability
+        </label>
+
+        <select id="fosterAvailability">
+          <option value="available">Available</option>
+          <option value="limited">Limited</option>
+          <option value="full">Full</option>
+          <option value="unavailable">Unavailable</option>
+        </select>
+      </div>
+
+    </div>
+
+    <div style="display:flex;gap:10px;">
+
+      <button
+        class="btn primary"
+        onclick="saveFoster()"
+      >
+        Save Foster
+      </button>
+
+      <button
+        class="btn secondary"
+        onclick="closeFosterForm()"
+      >
+        Cancel
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- FOSTER SEARCH -->
+
+  <div class="toolbar">
+
+    <input
+      class="search"
+      id="fosterSearch"
+      placeholder="Search fosters..."
+      oninput="filterFosters()"
+    >
+
+    <button
+      class="btn primary"
+      onclick="openFosterForm()"
+    >
+      + Add Foster
+    </button>
+
+  </div>
+
+
+  <!-- FOSTER TABLE -->
+
+  <div class="panel">
+
+    <table class="table">
+
+      <thead>
+
+        <tr>
+
+          <th>
+            Foster
+          </th>
+
+          <th>
+            Location
+          </th>
+
+          <th>
+            Availability
+          </th>
+
+          <th>
+            Capacity
+          </th>
+
+          <th>
+            Transportation
+          </th>
+
+        </tr>
+
+      </thead>
+
+      <tbody id="fostersBody">
+
+        <tr>
+
+          <td
+            colspan="5"
+            class="empty"
+          >
+            Loading fosters...
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</section>
+<!-- =========================================================
+     OWNERS
+========================================================= -->
+<section id="owners" class="section-page">
+  <div id="ownerForm" class="panel" style="display:none;margin-bottom:16px;">
+    <h2 id="ownerFormTitle">👤 Add Owner</h2>
+    <div class="form-grid">
+      <div class="form-group"><label>First Name</label><input id="ownerFirstName"></div>
+      <div class="form-group"><label>Last Name</label><input id="ownerLastName"></div>
+      <div class="form-group"><label>Phone</label><input id="ownerPhone" type="tel"></div>
+      <div class="form-group"><label>Email</label><input id="ownerEmail" type="email"></div>
+      <div class="form-group"><label>Facility / Program</label><input id="ownerFacility"></div>
+      <div class="form-group"><label>Case Status</label><select id="ownerCaseStatus"><option>active</option><option>pending</option><option>released</option><option>closed</option></select></div>
+      <div class="form-group"><label>Expected Release Date</label><input id="ownerReleaseDate" type="date"></div>
+      <div class="form-group"><label>Reunification Status</label><select id="ownerReunification"><option>pending</option><option>in_progress</option><option>ready</option><option>completed</option><option>unable</option></select></div>
+      <div class="form-group"><label>City</label><input id="ownerCity"></div>
+      <div class="form-group"><label>State</label><input id="ownerState"></div>
+      <div class="form-group"><label>ZIP</label><input id="ownerZip"></div>
+      <div class="form-group wide"><label>Address</label><input id="ownerAddress"></div>
+      <div class="form-group wide"><label>Notes</label><textarea id="ownerNotes" rows="3"></textarea></div>
+    </div>
+    <div class="inline-actions"><button class="btn primary" onclick="saveOwner()">Save Owner</button><button class="btn secondary" onclick="closeOwnerForm()">Cancel</button></div>
+  </div>
+  <div class="toolbar"><input class="search" id="ownerSearch" placeholder="Search owners..." oninput="filterOwners()"><button class="btn primary" onclick="openOwnerForm()">+ Add Owner</button></div>
+  <div class="panel table-wrap"><table class="table"><thead><tr><th>Owner</th><th>Contact</th><th>Facility</th><th>Release</th><th>Reunification</th><th>Actions</th></tr></thead><tbody id="ownersBody"><tr><td colspan="6" class="empty">Loading owners...</td></tr></tbody></table></div>
+</section>
+
+
+<!-- =========================================================
+     PLACEMENTS
+========================================================= -->
+<section id="placements" class="section-page">
+  <div id="placementForm" class="panel" style="display:none;margin-bottom:16px;">
+    <h2 id="placementFormTitle">🔄 Add Placement</h2>
+    <div class="form-grid">
+      <div class="form-group"><label>Dog</label><select id="placementDog"></select></div>
+      <div class="form-group"><label>Foster</label><select id="placementFoster"></select></div>
+      <div class="form-group"><label>Status</label><select id="placementStatus"><option>planned</option><option>active</option><option>extended</option><option>completed</option><option>cancelled</option></select></div>
+      <div class="form-group"><label>Start Date</label><input id="placementStart" type="date"></div>
+      <div class="form-group"><label>Expected End</label><input id="placementEnd" type="date"></div>
+      <div class="form-group wide"><label>Notes</label><textarea id="placementNotes" rows="3"></textarea></div>
+    </div>
+    <div class="inline-actions"><button class="btn primary" onclick="savePlacement()">Save Placement</button><button class="btn secondary" onclick="closePlacementForm()">Cancel</button></div>
+  </div>
+  <div class="toolbar"><input class="search" id="placementSearch" placeholder="Search placements..." oninput="filterPlacements()"><button class="btn primary" onclick="openPlacementForm()">+ New Placement</button></div>
+  <div class="panel table-wrap"><table class="table"><thead><tr><th>Dog</th><th>Foster</th><th>Start</th><th>Expected End</th><th>Status</th><th>Actions</th></tr></thead><tbody id="placementsBody"><tr><td colspan="6" class="empty">Loading placements...</td></tr></tbody></table></div>
+</section>
+
+
+<!-- =========================================================
+     CHECKINS
+========================================================= -->
+<section id="checkins" class="section-page">
+  <div id="checkinForm" class="panel" style="display:none;margin-bottom:16px;">
+    <h2>📋 Record Foster Check-in</h2>
+    <div class="form-grid">
+      <div class="form-group"><label>Dog</label><select id="checkinDog"></select></div>
+      <div class="form-group"><label>Foster</label><select id="checkinFoster"></select></div>
+      <div class="form-group"><label>Check-in Date</label><input id="checkinDate" type="date"></div>
+      <div class="form-group"><label>Health</label><select id="checkinHealth"><option>good</option><option>monitor</option><option>concern</option><option>urgent</option></select></div>
+      <div class="form-group"><label>Behavior</label><select id="checkinBehavior"><option>good</option><option>improving</option><option>concern</option><option>urgent</option></select></div>
+      <div class="form-group"><label>Appetite</label><input id="checkinAppetite"></div>
+      <div class="form-group"><label>Medication Status</label><input id="checkinMedication"></div>
+      <div class="form-group"><label>Next Check-in</label><input id="checkinNext" type="date"></div>
+      <div class="form-group wide"><label>Concerns</label><textarea id="checkinConcerns" rows="3"></textarea></div>
+      <div class="form-group wide"><label>Notes</label><textarea id="checkinNotes" rows="3"></textarea></div>
+    </div>
+    <div class="inline-actions"><button class="btn primary" onclick="saveCheckin()">Save Check-in</button><button class="btn secondary" onclick="closeCheckinForm()">Cancel</button></div>
+  </div>
+  <div class="toolbar"><input class="search" id="checkinSearch" placeholder="Search check-ins..." oninput="filterCheckins()"><button class="btn primary" onclick="openCheckinForm()">+ Record Check-in</button></div>
+  <div class="panel table-wrap"><table class="table"><thead><tr><th>Date</th><th>Dog</th><th>Foster</th><th>Health</th><th>Behavior</th><th>Next</th><th>Actions</th></tr></thead><tbody id="checkinsBody"><tr><td colspan="7" class="empty">Loading check-ins...</td></tr></tbody></table></div>
+</section>
+
+
+<!-- =========================================================
+     MEDICAL
+========================================================= -->
+<section id="medical" class="section-page">
+  <div id="medicalForm" class="panel" style="display:none;margin-bottom:16px;">
+    <h2>💊 Add Medical Record</h2>
+    <div class="form-grid">
+      <div class="form-group"><label>Dog</label><select id="medicalDog"></select></div>
+      <div class="form-group"><label>Date</label><input id="medicalDate" type="date"></div>
+      <div class="form-group"><label>Record Type</label><select id="medicalType"><option>vet_visit</option><option>vaccination</option><option>medication</option><option>spay_neuter</option><option>test</option><option>other</option></select></div>
+      <div class="form-group"><label>Provider</label><input id="medicalProvider"></div>
+      <div class="form-group"><label>Medication</label><input id="medicalMedication"></div>
+      <div class="form-group"><label>Dosage</label><input id="medicalDosage"></div>
+      <div class="form-group"><label>Due Date</label><input id="medicalDue" type="date"></div>
+      <div class="form-group"><label>Cost</label><input id="medicalCost" type="number" min="0" step="0.01"></div>
+      <div class="form-group wide"><label>Description</label><textarea id="medicalDescription" rows="3"></textarea></div>
+      <div class="form-group wide"><label>Notes</label><textarea id="medicalNotes" rows="3"></textarea></div>
+    </div>
+    <div class="inline-actions"><button class="btn primary" onclick="saveMedical()">Save Record</button><button class="btn secondary" onclick="closeMedicalForm()">Cancel</button></div>
+  </div>
+  <div class="toolbar"><input class="search" id="medicalSearch" placeholder="Search medical records..." oninput="filterMedical()"><button class="btn primary" onclick="openMedicalForm()">+ Add Record</button></div>
+  <div class="panel table-wrap"><table class="table"><thead><tr><th>Date</th><th>Dog</th><th>Type</th><th>Provider</th><th>Medication</th><th>Due</th><th>Cost</th><th>Actions</th></tr></thead><tbody id="medicalBody"><tr><td colspan="8" class="empty">Loading medical records...</td></tr></tbody></table></div>
+</section>
+
+
+<!-- =========================================================
+     EXPENSES
+========================================================= -->
+<section id="expenses" class="section-page">
+  <div id="expenseForm" class="panel" style="display:none;margin-bottom:16px;">
+    <h2>💰 Add Expense</h2>
+    <div class="form-grid">
+      <div class="form-group"><label>Dog</label><select id="expenseDog"></select></div>
+      <div class="form-group"><label>Date</label><input id="expenseDate" type="date"></div>
+      <div class="form-group"><label>Category</label><select id="expenseCategory"><option>food</option><option>vet</option><option>medication</option><option>transportation</option><option>boarding</option><option>supplies</option><option>other</option></select></div>
+      <div class="form-group"><label>Vendor</label><input id="expenseVendor"></div>
+      <div class="form-group"><label>Amount</label><input id="expenseAmount" type="number" min="0" step="0.01"></div>
+      <div class="form-group"><label>Reimbursable</label><select id="expenseReimbursable"><option value="false">No</option><option value="true">Yes</option></select></div>
+      <div class="form-group"><label>Paid</label><select id="expensePaid"><option value="false">No</option><option value="true">Yes</option></select></div>
+      <div class="form-group wide"><label>Description</label><input id="expenseDescription"></div>
+      <div class="form-group wide"><label>Receipt URL</label><input id="expenseReceipt" placeholder="Optional link to receipt"></div>
+      <div class="form-group wide"><label>Notes</label><textarea id="expenseNotes" rows="3"></textarea></div>
+    </div>
+    <div class="inline-actions"><button class="btn primary" onclick="saveExpense()">Save Expense</button><button class="btn secondary" onclick="closeExpenseForm()">Cancel</button></div>
+  </div>
+  <div class="toolbar"><input class="search" id="expenseSearch" placeholder="Search expenses..." oninput="filterExpenses()"><button class="btn primary" onclick="openExpenseForm()">+ Add Expense</button></div>
+  <div class="panel table-wrap"><table class="table"><thead><tr><th>Date</th><th>Dog</th><th>Category</th><th>Vendor</th><th>Amount</th><th>Paid</th><th>Reimbursable</th><th>Actions</th></tr></thead><tbody id="expensesBody"><tr><td colspan="8" class="empty">Loading expenses...</td></tr></tbody></table></div>
+</section>
+
+
+<!-- =========================================================
+     DOCUMENTS
+========================================================= -->
+<section id="documents" class="section-page">
+  <div id="documentForm" class="panel" style="display:none;margin-bottom:16px;">
+    <h2>📁 Add Document</h2>
+    <div class="form-grid">
+      <div class="form-group"><label>Dog</label><select id="documentDog"></select></div>
+      <div class="form-group"><label>Owner</label><select id="documentOwner"></select></div>
+      <div class="form-group"><label>Date</label><input id="documentDate" type="date"></div>
+      <div class="form-group"><label>Document Type</label><select id="documentType"><option>owner_agreement</option><option>medical</option><option>intake</option><option>reunification</option><option>receipt</option><option>other</option></select></div>
+      <div class="form-group"><label>File Name</label><input id="documentFileName" required></div>
+      <div class="form-group"><label>File URL</label><input id="documentFileUrl" placeholder="Storage or shared-file URL"></div>
+      <div class="form-group wide"><label>Notes</label><textarea id="documentNotes" rows="3"></textarea></div>
+    </div>
+    <div class="setup-note">This version records document metadata and a file link. Direct uploads can be added after a Supabase Storage bucket is configured.</div>
+    <div class="inline-actions" style="margin-top:12px"><button class="btn primary" onclick="saveDocument()">Save Document</button><button class="btn secondary" onclick="closeDocumentForm()">Cancel</button></div>
+  </div>
+  <div class="toolbar"><input class="search" id="documentSearch" placeholder="Search documents..." oninput="filterDocuments()"><button class="btn primary" onclick="openDocumentForm()">+ Add Document</button></div>
+  <div class="panel table-wrap"><table class="table"><thead><tr><th>File</th><th>Type</th><th>Dog</th><th>Owner</th><th>Date</th><th>Link</th><th>Actions</th></tr></thead><tbody id="documentsBody"><tr><td colspan="7" class="empty">Loading documents...</td></tr></tbody></table></div>
+</section>
+
+
+<!-- =========================================================
+     VOLUNTEERS
+========================================================= -->
+<section id="volunteers" class="section-page">
+  <div id="volunteerForm" class="panel" style="display:none;margin-bottom:16px;">
+    <h2 id="volunteerFormTitle">🙋 Add Volunteer</h2>
+    <div class="form-grid">
+      <div class="form-group"><label>First Name</label><input id="volFirst"></div>
+      <div class="form-group"><label>Last Name</label><input id="volLast"></div>
+      <div class="form-group"><label>Status</label><select id="volStatus"><option>active</option><option>inactive</option><option>pending</option></select></div>
+      <div class="form-group"><label>Email</label><input id="volEmail" type="email"></div>
+      <div class="form-group"><label>Phone</label><input id="volPhone" type="tel"></div>
+      <div class="form-group"><label>City</label><input id="volCity"></div>
+      <div class="form-group"><label>State</label><input id="volState"></div>
+      <div class="form-group"><label>Availability</label><input id="volAvailability"></div>
+      <div class="form-group wide"><label>Skills</label><input id="volSkills" placeholder="Transport, fundraising, admin, events..."></div>
+      <div class="form-group wide"><label>Notes</label><textarea id="volNotes" rows="3"></textarea></div>
+    </div>
+    <div class="inline-actions"><button class="btn primary" onclick="saveVolunteer()">Save Volunteer</button><button class="btn secondary" onclick="closeVolunteerForm()">Cancel</button></div>
+  </div>
+  <div class="toolbar"><input class="search" id="volunteerSearch" placeholder="Search volunteers..." oninput="filterVolunteers()"><button class="btn primary" onclick="openVolunteerForm()">+ Add Volunteer</button></div>
+  <div class="panel table-wrap"><table class="table"><thead><tr><th>Volunteer</th><th>Contact</th><th>Location</th><th>Skills</th><th>Status</th><th>Actions</th></tr></thead><tbody id="volunteersBody"><tr><td colspan="6" class="empty">Loading volunteers...</td></tr></tbody></table></div>
+</section>
+
+
+<!-- =========================================================
+     VOLUNTEER NEEDS
+========================================================= -->
+<section id="needs" class="section-page">
+  <div id="needForm" class="panel" style="display:none;margin-bottom:16px;">
+    <h2 id="needFormTitle">📢 Add Volunteer Need</h2>
+    <div class="form-grid">
+      <div class="form-group"><label>Title</label><input id="needTitle"></div>
+      <div class="form-group"><label>Category</label><select id="needCategory"><option>foster</option><option>transportation</option><option>fundraising</option><option>events</option><option>admin</option><option>social_media</option><option>general</option></select></div>
+      <div class="form-group"><label>Priority</label><select id="needPriority"><option>low</option><option>normal</option><option>high</option><option>urgent</option></select></div>
+      <div class="form-group"><label>Status</label><select id="needStatus"><option>open</option><option>in_progress</option><option>filled</option><option>closed</option></select></div>
+      <div class="form-group"><label>Needed By</label><input id="needDate" type="date"></div>
+      <div class="form-group"><label>Assigned Volunteer</label><select id="needVolunteer"></select></div>
+      <div class="form-group wide"><label>Description</label><textarea id="needDescription" rows="3"></textarea></div>
+      <div class="form-group wide"><label>Notes</label><textarea id="needNotes" rows="3"></textarea></div>
+    </div>
+    <div class="inline-actions"><button class="btn primary" onclick="saveNeed()">Save Need</button><button class="btn secondary" onclick="closeNeedForm()">Cancel</button></div>
+  </div>
+  <div class="toolbar"><input class="search" id="needSearch" placeholder="Search volunteer needs..." oninput="filterNeeds()"><button class="btn primary" onclick="openNeedForm()">+ Add Need</button></div>
+  <div class="panel table-wrap"><table class="table"><thead><tr><th>Need</th><th>Category</th><th>Priority</th><th>Status</th><th>Needed By</th><th>Assigned</th><th>Actions</th></tr></thead><tbody id="needsBody"><tr><td colspan="7" class="empty">Loading volunteer needs...</td></tr></tbody></table></div>
+</section>
+
+
+<!-- =========================================================
+     REPORTS
+========================================================= -->
+<section id="reports" class="section-page">
+  <div class="toolbar"><button class="btn primary" onclick="loadReports()">↻ Refresh Reports</button><button class="btn secondary" onclick="window.print()">🖨️ Print</button></div>
+  <div class="kpi-row">
+    <div class="stat-card"><div class="muted">Total Dogs</div><div class="big" id="reportDogs">0</div></div>
+    <div class="stat-card"><div class="muted">Available Dogs</div><div class="big" id="reportAvailable">0</div></div>
+    <div class="stat-card"><div class="muted">Active Placements</div><div class="big" id="reportPlacements">0</div></div>
+    <div class="stat-card"><div class="muted">Available Fosters</div><div class="big" id="reportFosters">0</div></div>
+  </div>
+  <div class="module-grid">
+    <div class="stat-card"><div class="muted">Dogs by Status</div><div id="reportDogStatuses" style="margin-top:10px"></div></div>
+    <div class="stat-card"><div class="muted">Foster Capacity</div><div id="reportFosterCapacity" style="margin-top:10px"></div></div>
+    <div class="stat-card"><div class="muted">Placement Watch</div><div id="reportPlacementWatch" style="margin-top:10px"></div></div>
+  </div>
+  <div class="panel"><h2>Operations Snapshot</h2><div id="reportNarrative" class="muted">Loading...</div></div>
+</section>
+
+
+<!-- =========================================================
+     USERS
+========================================================= -->
+<section id="users" class="section-page">
+  <div class="panel"><h2>⚙️ Users & Permissions</h2><p class="muted">User authentication is managed by Supabase Auth. This screen manages the Hub profile fields available to the app; creating/deleting login accounts requires the Supabase admin API.</p></div>
+  <div class="panel table-wrap"><table class="table"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Last Updated</th><th>Actions</th></tr></thead><tbody id="usersBody"><tr><td colspan="6" class="empty">Loading users...</td></tr></tbody></table></div>
+</section>
+
+
+</main>
+
+</div>
+
+</div>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script>
+
+/* =========================================================
+   SUPABASE
+========================================================= */
+
+const client = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+
+
+let currentUser = null;
+let currentProfile = null;
+let allDogs = [];
+let currentDog = null;
+let editingDogId = null;
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+document
+  .getElementById("loginForm")
+  .addEventListener("submit", async function(e){
+
+    e.preventDefault();
+
+    const errorBox =
+      document.getElementById("loginError");
+
+    errorBox.style.display = "none";
+
+    const email =
+      document
+        .getElementById("email")
+        .value
+        .trim();
+
+    const password =
+      document
+        .getElementById("password")
+        .value;
+
+
+    const {
+      data,
+      error
+    } = await client.auth.signInWithPassword({
+      email,
+      password
+    });
+
+
+    if(error){
+
+      errorBox.textContent =
+        error.message;
+
+      errorBox.style.display =
+        "block";
+
+      return;
+    }
+
+
+    await startApp(data.user);
+
+  });
+
+
+/* =========================================================
+   START APP
+========================================================= */
+
+async function startApp(user){
+
+  if(!user){
+    return;
+  }
+
+
+  currentUser = user;
+
+
+  const {
+    data: profile,
+    error
+  } = await client
+    .from("profiles")
+    .select("*")
+    .eq("id", user.id)
+    .single();
+
+
+  if(error){
+
+    console.error(error);
+
+    const errorBox =
+      document.getElementById("loginError");
+
+    errorBox.textContent =
+      "Your account is authenticated, but your Second Leash profile could not be loaded.";
+
+    errorBox.style.display =
+      "block";
+
+    await client.auth.signOut();
+
+    return;
+  }
+
+
+  currentProfile = profile;
+
+
+  if(!profile.active){
+
+    alert(
+      "Your Second Leash account is inactive."
+    );
+
+    await client.auth.signOut();
+
+    return;
+  }
+
+
+  document
+    .getElementById("loginScreen")
+    .style.display = "none";
+
+
+  document
+    .getElementById("app")
+    .style.display = "block";
+
+
+  const firstName =
+    profile.first_name ||
+    user.email.split("@")[0];
+
+
+  document
+    .getElementById("userName")
+    .textContent =
+      firstName;
+
+
+  const role =
+    (profile.role || "user")
+      .replaceAll("_"," ")
+      .toUpperCase();
+
+
+  document
+    .getElementById("userRole")
+    .textContent =
+      role;
+
+
+  document
+    .getElementById("dashEmail")
+    .textContent =
+      user.email;
+
+
+  document
+    .getElementById("dashRole")
+    .textContent =
+      role;
+
+
+  document
+    .getElementById("userAvatar")
+    .textContent =
+      firstName
+        .charAt(0)
+        .toUpperCase();
+
+
+  document
+    .getElementById("title")
+    .textContent =
+      `Good to see you, ${firstName}`;
+
+
+  await loadDashboard();
+
+}
+
+
+/* =========================================================
+   SESSION CHECK
+========================================================= */
+
+async function checkSession(){
+
+  const {
+    data
+  } = await client.auth.getSession();
+
+
+  if(data && data.session){
+
+    await startApp(
+      data.session.user
+    );
+
+  }
+
+}
+
+
+checkSession();
+
+
+/* =========================================================
+   AUTH STATE
+========================================================= */
+
+client.auth.onAuthStateChange(
+  async (event, session) => {
+
+    if(event === "SIGNED_OUT"){
+
+      currentUser = null;
+      currentProfile = null;
+
+      document
+        .getElementById("app")
+        .style.display = "none";
+
+      document
+        .getElementById("loginScreen")
+        .style.display = "flex";
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+async function loadDashboard(){
+
+  try{
+
+    await loadDogs();
+
+    await loadFosters();
+
+    await loadPlacements();
+
+    await loadExtendedModules();
+
+  }catch(error){
+
+    console.error(
+      "Dashboard loading error:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   DOGS
+========================================================= */
+
+async function loadDogs(){
+
+  const {
+    data,
+    error
+  } = await client
+    .from("dogs")
+    .select("*")
+    .order("created_at", {
+      ascending:false
+    });
+
+
+  if(error){
+
+    console.error(
+      "Dogs error:",
+      error
+    );
+
+    const body =
+      document.getElementById("dogsBody");
+
+    if(body){
+
+      body.innerHTML =
+        `<tr>
+          <td colspan="4" class="empty">
+            Unable to load dogs.
+          </td>
+        </tr>`;
+
+    }
+
+    return;
+  }
+
+
+  allDogs =
+    data || [];
+
+
+  document
+    .getElementById("mDogs")
+    .textContent =
+      allDogs.length;
+
+
+  document
+    .getElementById("dashDogs")
+    .textContent =
+      allDogs.length;
+
+
+  renderDogs(allDogs);
+
+}
+
+
+/* =========================================================
+   RENDER DOGS
+========================================================= */
+
+function renderDogs(dogs){
+
+  const body =
+    document.getElementById("dogsBody");
+
+
+  if(!dogs.length){
+
+    body.innerHTML =
+      `<tr>
+        <td colspan="4" class="empty">
+          No dogs have been entered yet.
+        </td>
+      </tr>`;
+
+    return;
+  }
+
+
+  body.innerHTML =
+    dogs.map(d => {
+
+      const dogId =
+        escapeHtml(d.id);
+
+
+      const dogName =
+        escapeHtml(
+          d.name || "Unnamed Dog"
+        );
+
+
+      const breed =
+        escapeHtml(
+          d.breed || "Not entered"
+        );
+
+
+      const status =
+        escapeHtml(
+          (d.status || "unknown")
+            .replaceAll("_"," ")
+        );
+
+
+      const intake =
+        escapeHtml(
+          d.intake_date || "—"
+        );
+
+
+      const number =
+        escapeHtml(
+          d.dog_number || ""
+        );
+
+
+      return `
+
+        <tr>
+
+          <td>
+
+            <strong
+              style="
+                color:var(--blue);
+                cursor:pointer;
+              "
+              onclick="viewDog('${dogId}')"
+            >
+              ${dogName}
+            </strong>
+
+            <div
+              style="
+                font-size:11px;
+                color:#6d7888;
+              "
+            >
+              SL-${number}
+            </div>
+
+          </td>
+
+
+          <td>
+            ${breed}
+          </td>
+
+
+          <td>
+
+            <span class="pill blue">
+              ${status.toUpperCase()}
+            </span>
+
+          </td>
+
+
+          <td>
+            ${intake}
+          </td>
+
+        </tr>
+
+      `;
+
+    }).join("");
+
+}
+
+
+/* =========================================================
+   FILTER DOGS
+========================================================= */
+
+function filterDogs(){
+
+  const q =
+    document
+      .getElementById("dogSearch")
+      .value
+      .toLowerCase()
+      .trim();
+
+
+  renderDogs(
+
+    allDogs.filter(d => {
+
+      const searchable = `
+
+        ${d.name || ""}
+
+        ${d.breed || ""}
+
+        ${d.status || ""}
+
+        ${d.dog_number || ""}
+
+      `.toLowerCase();
+
+
+      return searchable.includes(q);
+
+    })
+
+  );
+
+}
+
+
+/* =========================================================
+   DOG PROFILE
+========================================================= */
+
+async function viewDog(id){
+
+  const dog =
+    allDogs.find(
+      d => String(d.id) === String(id)
+    );
+
+
+  if(!dog){
+
+    alert(
+      "Dog record could not be found."
+    );
+
+    return;
+  }
+
+
+  currentDog = dog;
+
+
+  document
+    .getElementById("profileDogName")
+    .textContent =
+      dog.name || "Unnamed Dog";
+
+
+  document
+    .getElementById("profileDogNumber")
+    .textContent =
+      "SL-" +
+      (
+        dog.dog_number ||
+        "Not assigned"
+      );
+
+
+  document
+    .getElementById("profileDogStatus")
+    .textContent =
+      (
+        dog.status ||
+        "unknown"
+      )
+      .replaceAll("_"," ")
+      .toUpperCase();
+
+
+  document
+    .getElementById("profileDogBreed")
+    .textContent =
+      dog.breed ||
+      "Not entered";
+
+
+  document
+    .getElementById("profileDogAge")
+    .textContent =
+      dog.approximate_age ||
+      "Not entered";
+
+
+  document
+    .getElementById("profileDogSex")
+    .textContent =
+      dog.sex ||
+      "Not entered";
+
+
+  document
+    .getElementById("profileDogIntake")
+    .textContent =
+      dog.intake_date ||
+      "Not entered";
+
+
+  document
+    .getElementById("profileDogCreated")
+    .textContent =
+      dog.created_at
+        ? new Date(
+            dog.created_at
+          ).toLocaleDateString()
+        : "—";
+
+
+  document
+    .getElementById("profileDogNotes")
+    .textContent =
+      dog.notes ||
+      "No notes recorded.";
+
+
+  document
+    .getElementById("profileOverviewStatus")
+    .textContent =
+      dog.status
+        ? dog.status
+            .replaceAll("_"," ")
+        : "—";
+
+
+  document
+    .getElementById("profileOverviewFoster")
+    .textContent =
+      "None";
+
+
+  document
+    .getElementById("profileOverviewReturn")
+    .textContent =
+      "—";
+
+
+  showPage("dogProfile");
+
+}
+
+
+/* =========================================================
+   DOG FORM
+========================================================= */
+
+function openDogForm(){
+
+  editingDogId = null;
+
+
+  document
+    .getElementById("dogForm")
+    .style.display =
+      "block";
+
+
+  document
+    .querySelector("#dogForm h2")
+    .textContent =
+      "🐶 Add New Dog";
+
+
+  document
+    .getElementById("dogName")
+    .focus();
+
+
+  showPage("dogs");
+
+}
+
+
+function closeDogForm(){
+
+  editingDogId = null;
+
+
+  document
+    .getElementById("dogForm")
+    .style.display =
+      "none";
+
+
+  document
+    .getElementById("dogName")
+    .value = "";
+
+
+  document
+    .getElementById("dogBreed")
+    .value = "";
+
+
+  document
+    .getElementById("dogAge")
+    .value = "";
+
+
+  document
+    .getElementById("dogSex")
+    .value = "";
+
+
+  document
+    .getElementById("dogIntakeDate")
+    .value = "";
+
+
+  document
+    .getElementById("dogStatus")
+    .value = "intake";
+
+
+  document
+    .getElementById("dogNotes")
+    .value = "";
+
+
+  document
+    .querySelector("#dogForm h2")
+    .textContent =
+      "🐶 Add New Dog";
+
+}
+
+
+/* =========================================================
+   EDIT DOG
+========================================================= */
+
+function editCurrentDog(){
+
+  if(!currentDog){
+
+    alert(
+      "No dog is currently selected."
+    );
+
+    return;
+  }
+
+
+  editingDogId =
+    currentDog.id;
+
+
+  document
+    .getElementById("dogName")
+    .value =
+      currentDog.name || "";
+
+
+  document
+    .getElementById("dogBreed")
+    .value =
+      currentDog.breed || "";
+
+
+  document
+    .getElementById("dogAge")
+    .value =
+      currentDog.approximate_age || "";
+
+
+  document
+    .getElementById("dogSex")
+    .value =
+      currentDog.sex || "";
+
+
+  document
+    .getElementById("dogIntakeDate")
+    .value =
+      currentDog.intake_date || "";
+
+
+  document
+    .getElementById("dogStatus")
+    .value =
+      currentDog.status || "intake";
+
+
+  document
+    .getElementById("dogNotes")
+    .value =
+      currentDog.notes || "";
+
+
+  document
+    .querySelector("#dogForm h2")
+    .textContent =
+      "✏️ Edit Dog";
+
+
+  document
+    .getElementById("dogForm")
+    .style.display =
+      "block";
+
+
+  showPage("dogs");
+
+
+  document
+    .getElementById("dogName")
+    .focus();
+
+}
+
+
+/* =========================================================
+   SAVE DOG
+========================================================= */
+
+async function saveDog(){
+
+  const name =
+    document
+      .getElementById("dogName")
+      .value
+      .trim();
+
+
+  if(!name){
+
+    alert(
+      "Please enter the dog's name."
+    );
+
+    return;
+  }
+
+
+  const dogData = {
+
+    name:name,
+
+    breed:
+      document
+        .getElementById("dogBreed")
+        .value
+        .trim() || null,
+
+    approximate_age:
+      document
+        .getElementById("dogAge")
+        .value
+        .trim() || null,
+
+    sex:
+      document
+        .getElementById("dogSex")
+        .value || null,
+
+    intake_date:
+      document
+        .getElementById("dogIntakeDate")
+        .value || null,
+
+    status:
+      document
+        .getElementById("dogStatus")
+        .value,
+
+    notes:
+      document
+        .getElementById("dogNotes")
+        .value
+        .trim() || null
+
+  };
+
+
+  /* ==========================================
+     EDIT EXISTING DOG
+  ========================================== */
+
+  if(editingDogId){
+
+    const {
+      error
+    } = await client
+      .from("dogs")
+      .update(dogData)
+      .eq(
+        "id",
+        editingDogId
+      );
+
+
+    if(error){
+
+      alert(
+        "Unable to update dog:\n\n" +
+        error.message
+      );
+
+      console.error(error);
+
+      return;
+    }
+
+
+    alert(
+      "Dog updated successfully!"
+    );
+
+  }
+
+
+  /* ==========================================
+     ADD NEW DOG
+  ========================================== */
+
+  else{
+
+    const {
+      error
+    } = await client
+      .from("dogs")
+      .insert(dogData);
+
+
+    if(error){
+
+      alert(
+        "Unable to save dog:\n\n" +
+        error.message
+      );
+
+      console.error(error);
+
+      return;
+    }
+
+
+    alert(
+      "Dog added successfully!"
+    );
+
+  }
+
+
+  closeDogForm();
+
+
+  await loadDogs();
+
+
+  showPage("dogs");
+
+}
+
+
+/* =========================================================
+   FOSTERS
+========================================================= */
+
+let allFosters = [];
+let editingFosterId = null;
+
+
+/* =========================================================
+   LOAD FOSTERS
+========================================================= */
+
+async function loadFosters(){
+
+  const {
+    data,
+    error
+  } = await client
+    .from("fosters")
+    .select("*")
+    .order("created_at", {
+      ascending:false
+    });
+
+
+  if(error){
+
+    console.error(
+      "Fosters error:",
+      error
+    );
+
+    const body =
+      document.getElementById("fostersBody");
+
+    if(body){
+
+      body.innerHTML =
+        `<tr>
+          <td colspan="5" class="empty">
+            Unable to load foster records.
+          </td>
+        </tr>`;
+
+    }
+
+    return;
+  }
+
+
+  allFosters =
+    data || [];
+
+
+  document
+    .getElementById("mFosters")
+    .textContent =
+      allFosters.length;
+
+
+  document
+    .getElementById("dashFosters")
+    .textContent =
+      allFosters.length;
+
+
+  renderFosters(allFosters);
+
+}
+
+
+/* =========================================================
+   RENDER FOSTERS
+========================================================= */
+
+function renderFosters(fosters){
+
+  const body =
+    document.getElementById("fostersBody");
+
+
+  if(!body){
+    return;
+  }
+
+
+  if(!fosters.length){
+
+    body.innerHTML =
+      `<tr>
+
+        <td
+          colspan="5"
+          class="empty"
+        >
+          No foster homes have been entered yet.
+        </td>
+
+      </tr>`;
+
+    return;
+  }
+
+
+  body.innerHTML =
+    fosters.map(f => {
+
+      const name =
+        `${f.first_name || ""} ${f.last_name || ""}`
+          .trim() ||
+        "Unnamed Foster";
+
+
+      const location =
+        [
+          f.city,
+          f.state
+        ]
+        .filter(Boolean)
+        .join(", ") ||
+        "Not entered";
+
+
+      const availability =
+        f.availability ||
+        "unknown";
+
+
+      const capacity =
+        f.maximum_dogs ??
+        0;
+
+
+      const transportation =
+        f.transportation_available
+          ? "Available"
+          : "No";
+
+
+      return `
+
+        <tr>
+
+          <td>
+
+            <strong
+              style="
+                color:var(--blue);
+                cursor:pointer;
+              "
+              onclick="editFoster('${escapeHtml(f.id)}')"
+            >
+              ${escapeHtml(name)}
+            </strong>
+
+          </td>
+
+
+          <td>
+            ${escapeHtml(location)}
+          </td>
+
+
+          <td>
+
+            <span class="pill ${
+              availability === "available"
+                ? "green"
+                : "blue"
+            }">
+
+              ${escapeHtml(
+                availability
+                  .replaceAll("_"," ")
+                  .toUpperCase()
+              )}
+
+            </span>
+
+          </td>
+
+
+          <td>
+            ${escapeHtml(String(capacity))}
+          </td>
+
+
+          <td>
+            ${transportation}
+          </td>
+
+        </tr>
+
+      `;
+
+    }).join("");
+
+}
+
+
+/* =========================================================
+   FILTER FOSTERS
+========================================================= */
+
+function filterFosters(){
+
+  const input =
+    document.getElementById("fosterSearch");
+
+
+  const q =
+    input
+      ? input.value.toLowerCase().trim()
+      : "";
+
+
+  renderFosters(
+
+    allFosters.filter(f => {
+
+      const searchable = `
+
+        ${f.first_name || ""}
+
+        ${f.last_name || ""}
+
+        ${f.city || ""}
+
+        ${f.state || ""}
+
+        ${f.zip || ""}
+
+        ${f.availability || ""}
+
+      `.toLowerCase();
+
+
+      return searchable.includes(q);
+
+    })
+
+  );
+
+}
+
+
+/* =========================================================
+   OPEN FOSTER FORM
+========================================================= */
+
+function openFosterForm(){
+
+  editingFosterId = null;
+
+
+  document
+    .getElementById("fosterFormTitle")
+    .textContent =
+      "🏡 Add Foster";
+
+
+  document
+    .getElementById("fosterForm")
+    .style.display =
+      "block";
+
+
+  showPage("fosters");
+
+
+  document
+    .getElementById("fosterFirstName")
+    .focus();
+
+}
+
+
+/* =========================================================
+   CLOSE FOSTER FORM
+========================================================= */
+
+function closeFosterForm(){
+
+  editingFosterId = null;
+
+
+  document
+    .getElementById("fosterForm")
+    .style.display =
+      "none";
+
+
+  document
+    .getElementById("fosterFirstName")
+    .value = "";
+
+
+  document
+    .getElementById("fosterLastName")
+    .value = "";
+
+
+  document
+    .getElementById("fosterAddress")
+    .value = "";
+
+
+  document
+    .getElementById("fosterCity")
+    .value = "";
+
+
+  document
+    .getElementById("fosterState")
+    .value = "";
+
+
+  document
+    .getElementById("fosterZip")
+    .value = "";
+
+
+  document
+    .getElementById("householdDogs")
+    .value = "0";
+
+
+  document
+    .getElementById("householdCats")
+    .value = "0";
+
+
+  document
+    .getElementById("householdChildren")
+    .value = "0";
+
+
+  document
+    .getElementById("maxDogs")
+    .value = "1";
+
+
+  document
+    .getElementById("transportation")
+    .value = "";
+
+
+  document
+    .getElementById("transportationAvailable")
+    .value = "true";
+
+
+  document
+    .getElementById("fosterAvailability")
+    .value = "available";
+
+
+  document
+    .getElementById("fosterFormTitle")
+    .textContent =
+      "🏡 Add Foster";
+
+}
+
+
+/* =========================================================
+   EDIT FOSTER
+========================================================= */
+
+function editFoster(id){
+
+  const foster =
+    allFosters.find(
+      f => String(f.id) === String(id)
+    );
+
+
+  if(!foster){
+
+    alert(
+      "Foster record could not be found."
+    );
+
+    return;
+  }
+
+
+  editingFosterId =
+    foster.id;
+
+
+  document
+    .getElementById("fosterFirstName")
+    .value =
+      foster.first_name || "";
+
+
+  document
+    .getElementById("fosterLastName")
+    .value =
+      foster.last_name || "";
+
+
+  document
+    .getElementById("fosterAddress")
+    .value =
+      foster.address || "";
+
+
+  document
+    .getElementById("fosterCity")
+    .value =
+      foster.city || "";
+
+
+  document
+    .getElementById("fosterState")
+    .value =
+      foster.state || "";
+
+
+  document
+    .getElementById("fosterZip")
+    .value =
+      foster.zip || "";
+
+
+  document
+    .getElementById("householdDogs")
+    .value =
+      foster.household_dogs ?? 0;
+
+
+  document
+    .getElementById("householdCats")
+    .value =
+      foster.household_cats ?? 0;
+
+
+  document
+    .getElementById("householdChildren")
+    .value =
+      foster.household_children ?? 0;
+
+
+  document
+    .getElementById("maxDogs")
+    .value =
+      foster.maximum_dogs ?? 1;
+
+
+  document
+    .getElementById("transportation")
+    .value =
+      foster.transportation || "";
+
+
+  document
+    .getElementById("transportationAvailable")
+    .value =
+      foster.transportation_available
+        ? "true"
+        : "false";
+
+
+  document
+    .getElementById("fosterAvailability")
+    .value =
+      foster.availability ||
+      "available";
+
+
+  document
+    .getElementById("fosterFormTitle")
+    .textContent =
+      "✏️ Edit Foster";
+
+
+  document
+    .getElementById("fosterForm")
+    .style.display =
+      "block";
+
+
+  showPage("fosters");
+
+
+  document
+    .getElementById("fosterFirstName")
+    .focus();
+
+}
+
+
+/* =========================================================
+   SAVE FOSTER
+========================================================= */
+
+async function saveFoster(){
+
+  const firstName =
+    document
+      .getElementById("fosterFirstName")
+      .value
+      .trim();
+
+
+  const lastName =
+    document
+      .getElementById("fosterLastName")
+      .value
+      .trim();
+
+
+  if(!firstName && !lastName){
+
+    alert(
+      "Please enter the foster's first or last name."
+    );
+
+    return;
+  }
+
+
+  const fosterData = {
+
+    first_name:
+      firstName || null,
+
+    last_name:
+      lastName || null,
+
+    address:
+      document
+        .getElementById("fosterAddress")
+        .value
+        .trim() || null,
+
+    city:
+      document
+        .getElementById("fosterCity")
+        .value
+        .trim() || null,
+
+    state:
+      document
+        .getElementById("fosterState")
+        .value
+        .trim() || null,
+
+    zip:
+      document
+        .getElementById("fosterZip")
+        .value
+        .trim() || null,
+
+    household_dogs:
+      Number(
+        document
+          .getElementById("householdDogs")
+          .value
+      ) || 0,
+
+    household_cats:
+      Number(
+        document
+          .getElementById("householdCats")
+          .value
+      ) || 0,
+
+    household_children:
+      Number(
+        document
+          .getElementById("householdChildren")
+          .value
+      ) || 0,
+
+    maximum_dogs:
+      Number(
+        document
+          .getElementById("maxDogs")
+          .value
+      ) || 1,
+
+    transportation:
+      document
+        .getElementById("transportation")
+        .value || null,
+
+    transportation_available:
+      document
+        .getElementById("transportationAvailable")
+        .value === "true",
+
+    availability:
+      document
+        .getElementById("fosterAvailability")
+        .value
+
+  };
+
+
+  /* ==========================================
+     UPDATE
+  ========================================== */
+
+  if(editingFosterId){
+
+    const {
+      error
+    } = await client
+      .from("fosters")
+      .update(fosterData)
+      .eq(
+        "id",
+        editingFosterId
+      );
+
+
+    if(error){
+
+      alert(
+        "Unable to update foster:\n\n" +
+        error.message
+      );
+
+      console.error(error);
+
+      return;
+    }
+
+
+    alert(
+      "Foster updated successfully!"
+    );
+
+  }
+
+
+  /* ==========================================
+     INSERT
+  ========================================== */
+
+  else{
+
+    const {
+      error
+    } = await client
+      .from("fosters")
+      .insert(fosterData);
+
+
+    if(error){
+
+      alert(
+        "Unable to save foster:\n\n" +
+        error.message
+      );
+
+      console.error(error);
+
+      return;
+    }
+
+
+    alert(
+      "Foster added successfully!"
+    );
+
+  }
+
+
+  closeFosterForm();
+
+
+  await loadFosters();
+
+
+  showPage("fosters");
+
+}
+
+/* =========================================================
+   PLACEMENTS
+========================================================= */
+
+async function loadPlacements(){
+
+  const {
+    data,
+    error
+  } = await client
+    .from("placements")
+    .select(`
+      *,
+      dogs(name)
+    `)
+    .order(
+      "start_date",
+      {
+        ascending:false
+      }
+    );
+
+
+  if(error){
+
+    console.error(
+      "Placements error:",
+      error
+    );
+
+    return;
+  }
+
+
+  const placements =
+    data || [];
+
+
+  const activePlacements =
+    placements.filter(
+      p =>
+        [
+          "planned",
+          "active",
+          "extended"
+        ].includes(p.status)
+    );
+
+
+  document
+    .getElementById("mPlacements")
+    .textContent =
+      activePlacements.length;
+
+
+  document
+    .getElementById("dashPlacements")
+    .textContent =
+      activePlacements.length;
+
+
+  const body =
+    document
+      .getElementById("placementsBody");
+
+
+  if(!placements.length){
+
+    body.innerHTML =
+      `<tr>
+
+        <td
+          colspan="5"
+          class="empty"
+        >
+          No placements have been
+          entered yet.
+        </td>
+
+      </tr>`;
+
+    return;
+  }
+
+
+  body.innerHTML =
+    placements.map(p => `
+
+      <tr>
+
+        <td>
+          ${escapeHtml(
+            p.dogs?.name ||
+            "Unknown"
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            p.foster_id ||
+            "—"
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            p.start_date ||
+            "—"
+          )}
+        </td>
+
+        <td>
+          ${escapeHtml(
+            p.expected_end_date ||
+            "—"
+          )}
+        </td>
+
+        <td>
+
+          <span class="pill green">
+            ${escapeHtml(
+              p.status ||
+              "unknown"
+            )}
+          </span>
+
+        </td>
+
+      </tr>
+
+    `).join("");
+
+}
+
+
+
+/* =========================================================
+   HUB EXTENSIONS
+========================================================= */
+
+const todayISO = () => new Date().toISOString().slice(0,10);
+const safeDate = value => value ? new Date(value + (String(value).length === 10 ? 'T00:00:00' : '')).toLocaleDateString() : '—';
+const fmtMoney = value => Number(value || 0).toLocaleString(undefined,{style:'currency',currency:'USD'});
+
+let allOwners=[], allPlacements=[], allCheckins=[], allMedical=[], allExpenses=[], allDocuments=[], allVolunteers=[], allNeeds=[], allUsers=[];
+let editingOwnerId=null, editingPlacementId=null, editingCheckinId=null, editingMedicalId=null, editingExpenseId=null, editingDocumentId=null, editingVolunteerId=null, editingNeedId=null;
+
+function moduleError(bodyId, colspan, message){ const b=document.getElementById(bodyId); if(b) b.innerHTML=`<tr><td colspan="${colspan}" class="empty">${escapeHtml(message)}</td></tr>`; }
+function optionList(selectId, items, placeholder, labelFn, valueFn){ const el=document.getElementById(selectId); if(!el)return; el.innerHTML=`<option value="">${escapeHtml(placeholder)}</option>`+items.map(x=>`<option value="${escapeHtml(valueFn(x))}">${escapeHtml(labelFn(x))}</option>`).join(''); }
+function dogLabel(d){return d.name || 'Unnamed Dog';}
+function fosterLabel(f){return `${f.first_name||''} ${f.last_name||''}`.trim() || 'Unnamed Foster';}
+function ownerLabel(o){return `${o.first_name||''} ${o.last_name||''}`.trim() || 'Unnamed Owner';}
+function volunteerLabel(v){return `${v.first_name||''} ${v.last_name||''}`.trim() || 'Unnamed Volunteer';}
+function setVal(id,val=''){const e=document.getElementById(id);if(e)e.value=val??'';}
+
+async function loadOwners(){
+  const {data,error}=await client.from('owners').select('*').order('created_at',{ascending:false});
+  if(error){moduleError('ownersBody',6,'Owners table is not configured yet. Run the supplied second_leash_hub_schema.sql in Supabase.');return;}
+  allOwners=data||[]; renderOwners(allOwners); fillOwnerSelects();
+}
+function renderOwners(rows){const b=document.getElementById('ownersBody');if(!b)return;if(!rows.length){b.innerHTML='<tr><td colspan="6" class="empty">No owners have been entered yet.</td></tr>';return;}b.innerHTML=rows.map(o=>`<tr><td><strong>${escapeHtml(ownerLabel(o))}</strong><div class="muted">${escapeHtml(o.case_status||'')}</div></td><td>${escapeHtml(o.phone||'—')}<br>${escapeHtml(o.email||'')}</td><td>${escapeHtml(o.facility_name||'—')}</td><td>${escapeHtml(safeDate(o.expected_release_date))}</td><td><span class="pill blue">${escapeHtml((o.reunification_status||'pending').replaceAll('_',' ').toUpperCase())}</span></td><td><button class="btn small-btn secondary" onclick="editOwner('${escapeHtml(o.id)}')">Edit</button> <button class="btn small-btn danger" onclick="deleteOwner('${escapeHtml(o.id)}')">Delete</button></td></tr>`).join('');}
+function filterOwners(){const q=(document.getElementById('ownerSearch')?.value||'').toLowerCase();renderOwners(allOwners.filter(o=>`${ownerLabel(o)} ${o.phone||''} ${o.email||''} ${o.facility_name||''}`.toLowerCase().includes(q)));}
+function fillOwnerSelects(){optionList('documentOwner',allOwners,'No owner',ownerLabel,o=>o.id);}
+function openOwnerForm(){editingOwnerId=null;document.getElementById('ownerForm').style.display='block';document.getElementById('ownerFormTitle').textContent='👤 Add Owner';setVal('ownerCaseStatus','active');setVal('ownerReunification','pending');showPage('owners');document.getElementById('ownerFirstName').focus();}
+function closeOwnerForm(){editingOwnerId=null;document.getElementById('ownerForm').style.display='none';['ownerFirstName','ownerLastName','ownerPhone','ownerEmail','ownerFacility','ownerReleaseDate','ownerCity','ownerState','ownerZip','ownerAddress','ownerNotes'].forEach(id=>setVal(id,''));setVal('ownerCaseStatus','active');setVal('ownerReunification','pending');}
+function editOwner(id){const o=allOwners.find(x=>String(x.id)===String(id));if(!o)return;editingOwnerId=o.id;[['ownerFirstName',o.first_name],['ownerLastName',o.last_name],['ownerPhone',o.phone],['ownerEmail',o.email],['ownerFacility',o.facility_name],['ownerCaseStatus',o.case_status||'active'],['ownerReleaseDate',o.expected_release_date],['ownerReunification',o.reunification_status||'pending'],['ownerCity',o.city],['ownerState',o.state],['ownerZip',o.zip],['ownerAddress',o.address],['ownerNotes',o.notes]].forEach(([id,v])=>setVal(id,v));document.getElementById('ownerFormTitle').textContent='✏️ Edit Owner';document.getElementById('ownerForm').style.display='block';showPage('owners');}
+async function saveOwner(){const d={first_name:document.getElementById('ownerFirstName').value.trim()||null,last_name:document.getElementById('ownerLastName').value.trim()||null,phone:document.getElementById('ownerPhone').value.trim()||null,email:document.getElementById('ownerEmail').value.trim()||null,facility_name:document.getElementById('ownerFacility').value.trim()||null,case_status:document.getElementById('ownerCaseStatus').value,expected_release_date:document.getElementById('ownerReleaseDate').value||null,reunification_status:document.getElementById('ownerReunification').value,city:document.getElementById('ownerCity').value.trim()||null,state:document.getElementById('ownerState').value.trim()||null,zip:document.getElementById('ownerZip').value.trim()||null,address:document.getElementById('ownerAddress').value.trim()||null,notes:document.getElementById('ownerNotes').value.trim()||null};if(!d.first_name&&!d.last_name){alert('Enter the owner name.');return;}const q=editingOwnerId?client.from('owners').update(d).eq('id',editingOwnerId):client.from('owners').insert(d);const {error}=await q;if(error){alert(error.message);return;}closeOwnerForm();await loadOwners();}
+async function deleteOwner(id){if(!confirm('Delete this owner record?'))return;const {error}=await client.from('owners').delete().eq('id',id);if(error)alert(error.message);else await loadOwners();}
+
+async function loadPlacements(){
+  const {data,error}=await client.from('placements').select('*, dogs(name), fosters(first_name,last_name)').order('start_date',{ascending:false});
+  if(error){
+    const fallback=await client.from('placements').select('*').order('start_date',{ascending:false});
+    if(fallback.error){moduleError('placementsBody',6,'Unable to load placements. Check the placements table and its relationships.');return;}
+    allPlacements=fallback.data||[];
+  } else allPlacements=data||[];
+  const active=allPlacements.filter(p=>['planned','active','extended'].includes(p.status));
+  const m=document.getElementById('mPlacements'),d=document.getElementById('dashPlacements');if(m)m.textContent=active.length;if(d)d.textContent=active.length;
+  renderPlacements(allPlacements);
+}
+function placementDogName(p){return p.dogs?.name||allDogs.find(d=>String(d.id)===String(p.dog_id))?.name||'Unknown';}
+function placementFosterName(p){return fosterLabel(p.fosters||allFosters.find(f=>String(f.id)===String(p.foster_id))||{});}
+function renderPlacements(rows){const b=document.getElementById('placementsBody');if(!b)return;if(!rows.length){b.innerHTML='<tr><td colspan="6" class="empty">No placements have been entered yet.</td></tr>';return;}b.innerHTML=rows.map(p=>`<tr><td>${escapeHtml(placementDogName(p))}</td><td>${escapeHtml(placementFosterName(p))}</td><td>${escapeHtml(safeDate(p.start_date))}</td><td>${escapeHtml(safeDate(p.expected_end_date))}</td><td><span class="pill ${p.status==='active'?'green':'blue'}">${escapeHtml((p.status||'unknown').replaceAll('_',' ').toUpperCase())}</span></td><td><button class="btn small-btn secondary" onclick="editPlacement('${escapeHtml(p.id)}')">Edit</button> <button class="btn small-btn danger" onclick="deletePlacement('${escapeHtml(p.id)}')">Delete</button></td></tr>`).join('');}
+function filterPlacements(){const q=(document.getElementById('placementSearch')?.value||'').toLowerCase();renderPlacements(allPlacements.filter(p=>`${placementDogName(p)} ${placementFosterName(p)} ${p.status||''}`.toLowerCase().includes(q)));}
+function fillPlacementSelects(){optionList('placementDog',allDogs,'Select dog',dogLabel,d=>d.id);optionList('placementFoster',allFosters,'Select foster',fosterLabel,f=>f.id);}
+function openPlacementForm(){editingPlacementId=null;fillPlacementSelects();document.getElementById('placementForm').style.display='block';document.getElementById('placementFormTitle').textContent='🔄 Add Placement';setVal('placementStart',todayISO());setVal('placementEnd','');setVal('placementStatus','planned');setVal('placementNotes','');showPage('placements');}
+function closePlacementForm(){editingPlacementId=null;document.getElementById('placementForm').style.display='none';}
+function editPlacement(id){const p=allPlacements.find(x=>String(x.id)===String(id));if(!p)return;editingPlacementId=p.id;fillPlacementSelects();[['placementDog',p.dog_id],['placementFoster',p.foster_id],['placementStatus',p.status||'planned'],['placementStart',p.start_date],['placementEnd',p.expected_end_date],['placementNotes',p.notes]].forEach(([i,v])=>setVal(i,v));document.getElementById('placementFormTitle').textContent='✏️ Edit Placement';document.getElementById('placementForm').style.display='block';showPage('placements');}
+async function savePlacement(){const d={dog_id:document.getElementById('placementDog').value||null,foster_id:document.getElementById('placementFoster').value||null,start_date:document.getElementById('placementStart').value||null,expected_end_date:document.getElementById('placementEnd').value||null,status:document.getElementById('placementStatus').value,notes:document.getElementById('placementNotes').value.trim()||null};if(!d.dog_id||!d.foster_id){alert('Select both a dog and foster.');return;}const q=editingPlacementId?client.from('placements').update(d).eq('id',editingPlacementId):client.from('placements').insert(d);const {error}=await q;if(error){alert(error.message);return;}closePlacementForm();await loadPlacements();await loadDogs();}
+async function deletePlacement(id){if(!confirm('Delete this placement?'))return;const {error}=await client.from('placements').delete().eq('id',id);if(error)alert(error.message);else await loadPlacements();}
+
+async function loadCheckins(){const {data,error}=await client.from('checkins').select('*').order('checkin_date',{ascending:false});if(error){moduleError('checkinsBody',7,'Check-ins table is not configured yet. Run the supplied SQL schema.');return;}allCheckins=data||[];renderCheckins(allCheckins);}
+function checkinDogName(x){return allDogs.find(d=>String(d.id)===String(x.dog_id))?.name||'Unknown';}
+function checkinFosterName(x){return fosterLabel(allFosters.find(f=>String(f.id)===String(x.foster_id))||{});}
+function renderCheckins(rows){const b=document.getElementById('checkinsBody');if(!rows.length){b.innerHTML='<tr><td colspan="7" class="empty">No check-ins recorded yet.</td></tr>';return;}b.innerHTML=rows.map(x=>`<tr><td>${escapeHtml(safeDate(x.checkin_date))}</td><td>${escapeHtml(checkinDogName(x))}</td><td>${escapeHtml(checkinFosterName(x))}</td><td><span class="pill ${x.health_status==='good'?'green':'blue'}">${escapeHtml(x.health_status||'—')}</span></td><td>${escapeHtml(x.behavior_status||'—')}</td><td>${escapeHtml(safeDate(x.next_checkin_date))}</td><td><button class="btn small-btn secondary" onclick="editCheckin('${escapeHtml(x.id)}')">Edit</button> <button class="btn small-btn danger" onclick="deleteCheckin('${escapeHtml(x.id)}')">Delete</button></td></tr>`).join('');}
+function filterCheckins(){const q=(document.getElementById('checkinSearch')?.value||'').toLowerCase();renderCheckins(allCheckins.filter(x=>`${checkinDogName(x)} ${checkinFosterName(x)} ${x.health_status||''} ${x.concerns||''}`.toLowerCase().includes(q)));}
+function openCheckinForm(){editingCheckinId=null;optionList('checkinDog',allDogs,'Select dog',dogLabel,d=>d.id);optionList('checkinFoster',allFosters,'Select foster',fosterLabel,f=>f.id);document.getElementById('checkinForm').style.display='block';setVal('checkinDate',todayISO());showPage('checkins');}
+function closeCheckinForm(){editingCheckinId=null;document.getElementById('checkinForm').style.display='none';}
+function editCheckin(id){const x=allCheckins.find(r=>String(r.id)===String(id));if(!x)return;editingCheckinId=x.id;optionList('checkinDog',allDogs,'Select dog',dogLabel,d=>d.id);optionList('checkinFoster',allFosters,'Select foster',fosterLabel,f=>f.id);[['checkinDog',x.dog_id],['checkinFoster',x.foster_id],['checkinDate',x.checkin_date],['checkinHealth',x.health_status],['checkinBehavior',x.behavior_status],['checkinAppetite',x.appetite],['checkinMedication',x.medication_status],['checkinNext',x.next_checkin_date],['checkinConcerns',x.concerns],['checkinNotes',x.notes]].forEach(([i,v])=>setVal(i,v));document.getElementById('checkinForm').style.display='block';showPage('checkins');}
+async function saveCheckin(){const d={dog_id:document.getElementById('checkinDog').value||null,foster_id:document.getElementById('checkinFoster').value||null,checkin_date:document.getElementById('checkinDate').value||todayISO(),health_status:document.getElementById('checkinHealth').value,behavior_status:document.getElementById('checkinBehavior').value,appetite:document.getElementById('checkinAppetite').value.trim()||null,medication_status:document.getElementById('checkinMedication').value.trim()||null,next_checkin_date:document.getElementById('checkinNext').value||null,concerns:document.getElementById('checkinConcerns').value.trim()||null,notes:document.getElementById('checkinNotes').value.trim()||null,created_by:currentUser?.id||null};const q=editingCheckinId?client.from('checkins').update(d).eq('id',editingCheckinId):client.from('checkins').insert(d);const {error}=await q;if(error){alert(error.message);return;}closeCheckinForm();await loadCheckins();}
+async function deleteCheckin(id){if(!confirm('Delete this check-in?'))return;const {error}=await client.from('checkins').delete().eq('id',id);if(error)alert(error.message);else await loadCheckins();}
+
+async function loadMedical(){const {data,error}=await client.from('medical_records').select('*').order('record_date',{ascending:false});if(error){moduleError('medicalBody',8,'Medical records table is not configured yet. Run the supplied SQL schema.');return;}allMedical=data||[];renderMedical(allMedical);}
+function renderMedical(rows){const b=document.getElementById('medicalBody');if(!rows.length){b.innerHTML='<tr><td colspan="8" class="empty">No medical records recorded yet.</td></tr>';return;}b.innerHTML=rows.map(x=>`<tr><td>${escapeHtml(safeDate(x.record_date))}</td><td>${escapeHtml(checkinDogName(x))}</td><td>${escapeHtml((x.record_type||'').replaceAll('_',' '))}</td><td>${escapeHtml(x.provider||'—')}</td><td>${escapeHtml(x.medication||'—')}</td><td>${escapeHtml(safeDate(x.due_date))}</td><td>${escapeHtml(fmtMoney(x.cost))}</td><td><button class="btn small-btn secondary" onclick="editMedical('${escapeHtml(x.id)}')">Edit</button> <button class="btn small-btn danger" onclick="deleteMedical('${escapeHtml(x.id)}')">Delete</button></td></tr>`).join('');}
+function filterMedical(){const q=(document.getElementById('medicalSearch')?.value||'').toLowerCase();renderMedical(allMedical.filter(x=>`${checkinDogName(x)} ${x.record_type||''} ${x.provider||''} ${x.medication||''}`.toLowerCase().includes(q)));}
+function openMedicalForm(){editingMedicalId=null;optionList('medicalDog',allDogs,'Select dog',dogLabel,d=>d.id);document.getElementById('medicalForm').style.display='block';setVal('medicalDate',todayISO());showPage('medical');}
+function closeMedicalForm(){editingMedicalId=null;document.getElementById('medicalForm').style.display='none';}
+function editMedical(id){const x=allMedical.find(r=>String(r.id)===String(id));if(!x)return;editingMedicalId=x.id;optionList('medicalDog',allDogs,'Select dog',dogLabel,d=>d.id);[['medicalDog',x.dog_id],['medicalDate',x.record_date],['medicalType',x.record_type],['medicalProvider',x.provider],['medicalMedication',x.medication],['medicalDosage',x.dosage],['medicalDue',x.due_date],['medicalCost',x.cost],['medicalDescription',x.description],['medicalNotes',x.notes]].forEach(([i,v])=>setVal(i,v));document.getElementById('medicalForm').style.display='block';showPage('medical');}
+async function saveMedical(){const d={dog_id:document.getElementById('medicalDog').value||null,record_date:document.getElementById('medicalDate').value||todayISO(),record_type:document.getElementById('medicalType').value,provider:document.getElementById('medicalProvider').value.trim()||null,medication:document.getElementById('medicalMedication').value.trim()||null,dosage:document.getElementById('medicalDosage').value.trim()||null,due_date:document.getElementById('medicalDue').value||null,cost:document.getElementById('medicalCost').value?Number(document.getElementById('medicalCost').value):null,description:document.getElementById('medicalDescription').value.trim()||null,notes:document.getElementById('medicalNotes').value.trim()||null,created_by:currentUser?.id||null};if(!d.dog_id){alert('Select a dog.');return;}const q=editingMedicalId?client.from('medical_records').update(d).eq('id',editingMedicalId):client.from('medical_records').insert(d);const {error}=await q;if(error){alert(error.message);return;}closeMedicalForm();await loadMedical();}
+async function deleteMedical(id){if(!confirm('Delete this medical record?'))return;const {error}=await client.from('medical_records').delete().eq('id',id);if(error)alert(error.message);else await loadMedical();}
+
+async function loadExpenses(){const {data,error}=await client.from('expenses').select('*').order('expense_date',{ascending:false});if(error){moduleError('expensesBody',8,'Expenses table is not configured yet. Run the supplied SQL schema.');return;}allExpenses=data||[];renderExpenses(allExpenses);}
+function renderExpenses(rows){const b=document.getElementById('expensesBody');if(!rows.length){b.innerHTML='<tr><td colspan="8" class="empty">No expenses recorded yet.</td></tr>';return;}b.innerHTML=rows.map(x=>`<tr><td>${escapeHtml(safeDate(x.expense_date))}</td><td>${escapeHtml(checkinDogName(x))}</td><td>${escapeHtml(x.category||'—')}</td><td>${escapeHtml(x.vendor||'—')}</td><td>${escapeHtml(fmtMoney(x.amount))}</td><td>${x.paid?'<span class="pill green">PAID</span>':'<span class="pill blue">UNPAID</span>'}</td><td>${x.reimbursable?'Yes':'No'}</td><td><button class="btn small-btn secondary" onclick="editExpense('${escapeHtml(x.id)}')">Edit</button> <button class="btn small-btn danger" onclick="deleteExpense('${escapeHtml(x.id)}')">Delete</button></td></tr>`).join('');}
+function filterExpenses(){const q=(document.getElementById('expenseSearch')?.value||'').toLowerCase();renderExpenses(allExpenses.filter(x=>`${checkinDogName(x)} ${x.category||''} ${x.vendor||''} ${x.description||''}`.toLowerCase().includes(q)));}
+function openExpenseForm(){editingExpenseId=null;optionList('expenseDog',allDogs,'No dog',dogLabel,d=>d.id);document.getElementById('expenseForm').style.display='block';setVal('expenseDate',todayISO());setVal('expenseAmount','');setVal('expensePaid','false');setVal('expenseReimbursable','false');showPage('expenses');}
+function closeExpenseForm(){editingExpenseId=null;document.getElementById('expenseForm').style.display='none';}
+function editExpense(id){const x=allExpenses.find(r=>String(r.id)===String(id));if(!x)return;editingExpenseId=x.id;optionList('expenseDog',allDogs,'No dog',dogLabel,d=>d.id);[['expenseDog',x.dog_id],['expenseDate',x.expense_date],['expenseCategory',x.category],['expenseVendor',x.vendor],['expenseAmount',x.amount],['expenseReimbursable',String(!!x.reimbursable)],['expensePaid',String(!!x.paid)],['expenseDescription',x.description],['expenseReceipt',x.receipt_url],['expenseNotes',x.notes]].forEach(([i,v])=>setVal(i,v));document.getElementById('expenseForm').style.display='block';showPage('expenses');}
+async function saveExpense(){const d={dog_id:document.getElementById('expenseDog').value||null,expense_date:document.getElementById('expenseDate').value||todayISO(),category:document.getElementById('expenseCategory').value,vendor:document.getElementById('expenseVendor').value.trim()||null,amount:Number(document.getElementById('expenseAmount').value||0),reimbursable:document.getElementById('expenseReimbursable').value==='true',paid:document.getElementById('expensePaid').value==='true',description:document.getElementById('expenseDescription').value.trim()||null,receipt_url:document.getElementById('expenseReceipt').value.trim()||null,notes:document.getElementById('expenseNotes').value.trim()||null,created_by:currentUser?.id||null};const q=editingExpenseId?client.from('expenses').update(d).eq('id',editingExpenseId):client.from('expenses').insert(d);const {error}=await q;if(error){alert(error.message);return;}closeExpenseForm();await loadExpenses();}
+async function deleteExpense(id){if(!confirm('Delete this expense?'))return;const {error}=await client.from('expenses').delete().eq('id',id);if(error)alert(error.message);else await loadExpenses();}
+
+async function loadDocuments(){const {data,error}=await client.from('documents').select('*').order('document_date',{ascending:false});if(error){moduleError('documentsBody',7,'Documents table is not configured yet. Run the supplied SQL schema.');return;}allDocuments=data||[];renderDocuments(allDocuments);}
+function renderDocuments(rows){const b=document.getElementById('documentsBody');if(!rows.length){b.innerHTML='<tr><td colspan="7" class="empty">No documents recorded yet.</td></tr>';return;}b.innerHTML=rows.map(x=>{const d=allDogs.find(d=>String(d.id)===String(x.dog_id)),o=allOwners.find(o=>String(o.id)===String(x.owner_id));return `<tr><td>${escapeHtml(x.file_name)}</td><td>${escapeHtml(x.document_type||'—')}</td><td>${escapeHtml(dogLabel(d||{}))}</td><td>${escapeHtml(ownerLabel(o||{}))}</td><td>${escapeHtml(safeDate(x.document_date))}</td><td>${x.file_url?`<a href="${escapeHtml(x.file_url)}" target="_blank" rel="noopener">Open</a>`:'—'}</td><td><button class="btn small-btn secondary" onclick="editDocument('${escapeHtml(x.id)}')">Edit</button> <button class="btn small-btn danger" onclick="deleteDocument('${escapeHtml(x.id)}')">Delete</button></td></tr>`}).join('');}
+function filterDocuments(){const q=(document.getElementById('documentSearch')?.value||'').toLowerCase();renderDocuments(allDocuments.filter(x=>`${x.file_name||''} ${x.document_type||''} ${checkinDogName(x)}`.toLowerCase().includes(q)));}
+function openDocumentForm(){editingDocumentId=null;optionList('documentDog',allDogs,'No dog',dogLabel,d=>d.id);fillOwnerSelects();document.getElementById('documentForm').style.display='block';setVal('documentDate',todayISO());showPage('documents');}
+function closeDocumentForm(){editingDocumentId=null;document.getElementById('documentForm').style.display='none';}
+function editDocument(id){const x=allDocuments.find(r=>String(r.id)===String(id));if(!x)return;editingDocumentId=x.id;optionList('documentDog',allDogs,'No dog',dogLabel,d=>d.id);fillOwnerSelects();document.getElementById('documentForm').style.display='block';[['documentDog',x.dog_id],['documentOwner',x.owner_id],['documentDate',x.document_date],['documentType',x.document_type],['documentFileName',x.file_name],['documentFileUrl',x.file_url],['documentNotes',x.notes]].forEach(([i,v])=>setVal(i,v));showPage('documents');}
+async function saveDocument(){const d={dog_id:document.getElementById('documentDog').value||null,owner_id:document.getElementById('documentOwner').value||null,document_date:document.getElementById('documentDate').value||todayISO(),document_type:document.getElementById('documentType').value,file_name:document.getElementById('documentFileName').value.trim(),file_url:document.getElementById('documentFileUrl').value.trim()||null,notes:document.getElementById('documentNotes').value.trim()||null,created_by:currentUser?.id||null};if(!d.file_name){alert('Enter a file name.');return;}const q=editingDocumentId?client.from('documents').update(d).eq('id',editingDocumentId):client.from('documents').insert(d);const {error}=await q;if(error){alert(error.message);return;}closeDocumentForm();await loadDocuments();}
+async function deleteDocument(id){if(!confirm('Delete this document record?'))return;const {error}=await client.from('documents').delete().eq('id',id);if(error)alert(error.message);else await loadDocuments();}
+
+async function loadVolunteers(){const {data,error}=await client.from('volunteers').select('*').order('created_at',{ascending:false});if(error){moduleError('volunteersBody',6,'Volunteers table is not configured yet. Run the supplied SQL schema.');return;}allVolunteers=data||[];renderVolunteers(allVolunteers);fillNeedVolunteer();}
+function renderVolunteers(rows){const b=document.getElementById('volunteersBody');if(!rows.length){b.innerHTML='<tr><td colspan="6" class="empty">No volunteers have been entered yet.</td></tr>';return;}b.innerHTML=rows.map(v=>`<tr><td><strong>${escapeHtml(volunteerLabel(v))}</strong></td><td>${escapeHtml(v.email||'—')}<br>${escapeHtml(v.phone||'')}</td><td>${escapeHtml([v.city,v.state].filter(Boolean).join(', ')||'—')}</td><td>${escapeHtml(v.skills||'—')}</td><td><span class="pill blue">${escapeHtml((v.status||'active').toUpperCase())}</span></td><td><button class="btn small-btn secondary" onclick="editVolunteer('${escapeHtml(v.id)}')">Edit</button> <button class="btn small-btn danger" onclick="deleteVolunteer('${escapeHtml(v.id)}')">Delete</button></td></tr>`).join('');}
+function filterVolunteers(){const q=(document.getElementById('volunteerSearch')?.value||'').toLowerCase();renderVolunteers(allVolunteers.filter(v=>`${volunteerLabel(v)} ${v.email||''} ${v.phone||''} ${v.skills||''}`.toLowerCase().includes(q)));}
+function openVolunteerForm(){editingVolunteerId=null;document.getElementById('volunteerForm').style.display='block';document.getElementById('volunteerFormTitle').textContent='🙋 Add Volunteer';setVal('volStatus','active');showPage('volunteers');}
+function closeVolunteerForm(){editingVolunteerId=null;document.getElementById('volunteerForm').style.display='none';}
+function editVolunteer(id){const v=allVolunteers.find(x=>String(x.id)===String(id));if(!v)return;editingVolunteerId=v.id;[['volFirst',v.first_name],['volLast',v.last_name],['volStatus',v.status],['volEmail',v.email],['volPhone',v.phone],['volCity',v.city],['volState',v.state],['volAvailability',v.availability],['volSkills',v.skills],['volNotes',v.notes]].forEach(([i,val])=>setVal(i,val));document.getElementById('volunteerFormTitle').textContent='✏️ Edit Volunteer';document.getElementById('volunteerForm').style.display='block';showPage('volunteers');}
+async function saveVolunteer(){const d={first_name:document.getElementById('volFirst').value.trim()||null,last_name:document.getElementById('volLast').value.trim()||null,status:document.getElementById('volStatus').value,email:document.getElementById('volEmail').value.trim()||null,phone:document.getElementById('volPhone').value.trim()||null,city:document.getElementById('volCity').value.trim()||null,state:document.getElementById('volState').value.trim()||null,availability:document.getElementById('volAvailability').value.trim()||null,skills:document.getElementById('volSkills').value.trim()||null,notes:document.getElementById('volNotes').value.trim()||null};if(!d.first_name&&!d.last_name){alert('Enter the volunteer name.');return;}const q=editingVolunteerId?client.from('volunteers').update(d).eq('id',editingVolunteerId):client.from('volunteers').insert(d);const {error}=await q;if(error){alert(error.message);return;}closeVolunteerForm();await loadVolunteers();}
+async function deleteVolunteer(id){if(!confirm('Delete this volunteer?'))return;const {error}=await client.from('volunteers').delete().eq('id',id);if(error)alert(error.message);else await loadVolunteers();}
+
+function fillNeedVolunteer(){optionList('needVolunteer',allVolunteers,'Unassigned',volunteerLabel,v=>v.id);}
+async function loadNeeds(){const {data,error}=await client.from('volunteer_needs').select('*').order('created_at',{ascending:false});if(error){moduleError('needsBody',7,'Volunteer needs table is not configured yet. Run the supplied SQL schema.');return;}allNeeds=data||[];renderNeeds(allNeeds);}
+function renderNeeds(rows){const b=document.getElementById('needsBody');if(!rows.length){b.innerHTML='<tr><td colspan="7" class="empty">No volunteer needs have been entered yet.</td></tr>';return;}b.innerHTML=rows.map(x=>{const v=allVolunteers.find(v=>String(v.id)===String(x.volunteer_id));return `<tr><td><strong>${escapeHtml(x.title)}</strong><div class="muted">${escapeHtml(x.description||'')}</div></td><td>${escapeHtml(x.category||'')}</td><td><span class="pill ${x.priority==='urgent'||x.priority==='high'?'warning':'blue'}">${escapeHtml((x.priority||'normal').toUpperCase())}</span></td><td>${escapeHtml((x.status||'open').replaceAll('_',' '))}</td><td>${escapeHtml(safeDate(x.needed_by))}</td><td>${escapeHtml(volunteerLabel(v||{}))}</td><td><button class="btn small-btn secondary" onclick="editNeed('${escapeHtml(x.id)}')">Edit</button> <button class="btn small-btn danger" onclick="deleteNeed('${escapeHtml(x.id)}')">Delete</button></td></tr>`}).join('');}
+function filterNeeds(){const q=(document.getElementById('needSearch')?.value||'').toLowerCase();renderNeeds(allNeeds.filter(x=>`${x.title||''} ${x.description||''} ${x.category||''} ${x.priority||''} ${x.status||''}`.toLowerCase().includes(q)));}
+function openNeedForm(){editingNeedId=null;fillNeedVolunteer();document.getElementById('needForm').style.display='block';document.getElementById('needFormTitle').textContent='📢 Add Volunteer Need';setVal('needPriority','normal');setVal('needStatus','open');showPage('needs');}
+function closeNeedForm(){editingNeedId=null;document.getElementById('needForm').style.display='none';}
+function editNeed(id){const x=allNeeds.find(r=>String(r.id)===String(id));if(!x)return;editingNeedId=x.id;fillNeedVolunteer();[['needTitle',x.title],['needCategory',x.category],['needPriority',x.priority],['needStatus',x.status],['needDate',x.needed_by],['needVolunteer',x.volunteer_id],['needDescription',x.description],['needNotes',x.notes]].forEach(([i,v])=>setVal(i,v));document.getElementById('needFormTitle').textContent='✏️ Edit Volunteer Need';document.getElementById('needForm').style.display='block';showPage('needs');}
+async function saveNeed(){const d={title:document.getElementById('needTitle').value.trim(),category:document.getElementById('needCategory').value,priority:document.getElementById('needPriority').value,status:document.getElementById('needStatus').value,needed_by:document.getElementById('needDate').value||null,volunteer_id:document.getElementById('needVolunteer').value||null,description:document.getElementById('needDescription').value.trim()||null,notes:document.getElementById('needNotes').value.trim()||null};if(!d.title){alert('Enter a title.');return;}const q=editingNeedId?client.from('volunteer_needs').update(d).eq('id',editingNeedId):client.from('volunteer_needs').insert(d);const {error}=await q;if(error){alert(error.message);return;}closeNeedForm();await loadNeeds();}
+async function deleteNeed(id){if(!confirm('Delete this volunteer need?'))return;const {error}=await client.from('volunteer_needs').delete().eq('id',id);if(error)alert(error.message);else await loadNeeds();}
+
+async function loadReports(){
+  if(!allDogs.length) await loadDogs(); if(!allFosters.length) await loadFosters(); if(!allPlacements.length) await loadPlacements();
+  const active=allPlacements.filter(p=>['planned','active','extended'].includes(p.status));
+  const availableDogs=allDogs.filter(d=>['available','intake'].includes(d.status));
+  const availableFosters=allFosters.filter(f=>f.availability==='available');
+  document.getElementById('reportDogs').textContent=allDogs.length;document.getElementById('reportAvailable').textContent=availableDogs.length;document.getElementById('reportPlacements').textContent=active.length;document.getElementById('reportFosters').textContent=availableFosters.length;
+  const counts={};allDogs.forEach(d=>{const k=(d.status||'unknown').replaceAll('_',' ');counts[k]=(counts[k]||0)+1;});document.getElementById('reportDogStatuses').innerHTML=Object.entries(counts).map(([k,v])=>`<div class="row"><span>${escapeHtml(k)}</span><strong>${v}</strong></div>`).join('')||'<div class="muted">No dogs yet.</div>';
+  const capacity=allFosters.reduce((n,f)=>n+Number(f.maximum_dogs||0),0);document.getElementById('reportFosterCapacity').innerHTML=`<div class="big">${capacity}</div><div class="muted">total stated dog capacity across foster records</div>`;
+  const upcoming=active.filter(p=>p.expected_end_date).sort((a,b)=>String(a.expected_end_date).localeCompare(String(b.expected_end_date))).slice(0,5);document.getElementById('reportPlacementWatch').innerHTML=upcoming.length?upcoming.map(p=>`<div style="margin-bottom:8px"><strong>${escapeHtml(placementDogName(p))}</strong><div class="muted">Ends ${escapeHtml(safeDate(p.expected_end_date))}</div></div>`).join(''):'<div class="muted">No active placements with end dates.</div>';
+  document.getElementById('reportNarrative').textContent=`There are ${allDogs.length} dog records, ${active.length} active/planned placements, and ${availableFosters.length} currently available foster homes. Use the operational modules to keep case, care, and volunteer information current.`;
+}
+
+async function loadUsers(){const {data,error}=await client.from('profiles').select('*').order('created_at',{ascending:false});if(error){moduleError('usersBody',6,'Unable to load user profiles.');return;}allUsers=data||[];const b=document.getElementById('usersBody');b.innerHTML=allUsers.length?allUsers.map(u=>`<tr><td>${escapeHtml(`${u.first_name||''} ${u.last_name||''}`.trim()||'User')}</td><td>${escapeHtml(u.email||'—')}</td><td>${escapeHtml((u.role||'user').replaceAll('_',' ').toUpperCase())}</td><td>${u.active?'<span class="pill green">ACTIVE</span>':'<span class="pill blue">INACTIVE</span>'}</td><td>${escapeHtml(safeDate(u.updated_at||u.created_at))}</td><td><button class="btn small-btn secondary" onclick="editUser('${escapeHtml(u.id)}')">Edit</button></td></tr>`).join(''):'<tr><td colspan="6" class="empty">No profiles found.</td></tr>';}
+async function editUser(id){const u=allUsers.find(x=>String(x.id)===String(id));if(!u)return;const role=prompt('Role (admin, manager, staff, volunteer, user):',u.role||'user');if(role===null)return;const active=confirm('Should this account be active?');const {error}=await client.from('profiles').update({role:role.trim()||'user',active}).eq('id',id);if(error)alert(error.message);else await loadUsers();}
+
+async function loadExtendedModules(){
+  await Promise.allSettled([loadOwners(),loadCheckins(),loadMedical(),loadExpenses(),loadDocuments(),loadVolunteers(),loadNeeds(),loadUsers()]);
+}
+
+const originalShowPage = showPage;
+showPage = function(id){ originalShowPage(id); if(id==='reports') loadReports(); if(id==='users') loadUsers(); };
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function showPage(id){
+
+  document
+    .querySelectorAll(".section-page")
+    .forEach(page => {
+
+      page.classList.remove(
+        "active"
+      );
+
+    });
+
+
+  const page =
+    document.getElementById(id);
+
+
+  if(page){
+
+    page.classList.add(
+      "active"
+    );
+
+  }
+
+
+  document
+    .querySelectorAll(".nav button")
+    .forEach(button => {
+
+      button.classList.toggle(
+        "active",
+        button.dataset.page === id
+      );
+
+    });
+
+
+  const titles = {
+
+    dashboard:
+      "Dashboard",
+
+    dogs:
+      "Dogs",
+
+    dogProfile:
+      "Dog Profile",
+
+    fosters:
+      "Fosters",
+
+    owners:
+      "Owners & Reunification",
+
+    placements:
+      "Placements",
+
+    checkins:
+      "Foster Check-ins",
+
+    medical:
+      "Medical",
+
+    expenses:
+      "Expenses",
+
+    documents:
+      "Documents",
+
+    volunteers:
+      "Volunteers",
+
+    needs:
+      "Volunteer Needs",
+
+    reports:
+      "Reports",
+
+    users:
+      "Users & Permissions"
+
+  };
+
+
+  document
+    .getElementById("title")
+    .textContent =
+      titles[id] ||
+      "Second Leash Hub";
+
+}
+
+
+/* =========================================================
+   NAV BUTTONS
+========================================================= */
+
+document
+  .querySelectorAll(".nav button")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        showPage(
+          button.dataset.page
+        );
+
+      }
+    );
+
+  });
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+async function logout(){
+
+  const {
+    error
+  } = await client.auth.signOut();
+
+
+  if(error){
+
+    console.error(
+      "Logout error:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   HTML SAFETY
+========================================================= */
+
+function escapeHtml(value){
+
+  if(
+    value === null ||
+    value === undefined
+  ){
+
+    return "";
+
+  }
+
+
+  return String(value)
+
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+
+    .replace(
+      /</g,
+      "&lt;"
+    )
+
+    .replace(
+      />/g,
+      "&gt;"
+    )
+
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+
+}
+
+</script>
+
+</body>
+</html>
