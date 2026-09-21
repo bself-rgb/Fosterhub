@@ -7,7 +7,7 @@
 <title>Second Leash Hub</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js"></script>
+<script src="config.js?v=20260921"></script>
 
 <style>
 
@@ -1707,16 +1707,6 @@ body{
       </div>
 
       <div class="form-group">
-        <label for="transportation">Transportation</label>
-        <select id="transportation">
-          <option value="">Select...</option>
-          <option value="own_vehicle">Own vehicle</option>
-          <option value="limited">Limited</option>
-          <option value="none">No transportation</option>
-        </select>
-      </div>
-
-      <div class="form-group">
         <label for="transportationAvailable">
           Transportation Available
         </label>
@@ -1738,6 +1728,11 @@ body{
           <option value="full">Full</option>
           <option value="unavailable">Unavailable</option>
         </select>
+      </div>
+
+      <div class="form-group wide" style="grid-column:1/-1;">
+        <label for="fosterNotes">Notes</label>
+        <textarea id="fosterNotes" rows="3" placeholder="Household details, preferences, restrictions, or other notes..."></textarea>
       </div>
 
     </div>
@@ -3343,10 +3338,6 @@ function closeFosterForm(){
     .value = "1";
 
 
-  document
-    .getElementById("transportation")
-    .value = "";
-
 
   document
     .getElementById("transportationAvailable")
@@ -3452,11 +3443,6 @@ function editFoster(id){
       foster.maximum_dogs ?? 1;
 
 
-  document
-    .getElementById("transportation")
-    .value =
-      foster.transportation || "";
-
 
   document
     .getElementById("transportationAvailable")
@@ -3472,6 +3458,10 @@ function editFoster(id){
       foster.availability ||
       "available";
 
+  document
+    .getElementById("fosterNotes")
+    .value =
+      foster.notes || "";
 
   document
     .getElementById("fosterFormTitle")
@@ -3598,7 +3588,13 @@ async function saveFoster(){
     availability:
       document
         .getElementById("fosterAvailability")
+        .value,
+
+    notes:
+      document
+        .getElementById("fosterNotes")
         .value
+        .trim() || null
 
   };
 
@@ -3646,11 +3642,21 @@ async function saveFoster(){
 
   else{
 
+    const fosterId =
+      (window.crypto && typeof window.crypto.randomUUID === "function")
+        ? window.crypto.randomUUID()
+        : ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+            (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+          );
+
     const {
       error
     } = await client
       .from("fosters")
-      .insert(fosterData);
+      .insert({
+        id: fosterId,
+        ...fosterData
+      });
 
 
     if(error){
