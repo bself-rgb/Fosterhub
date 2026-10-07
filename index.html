@@ -2818,10 +2818,27 @@ function editCurrentDog(){
       currentDog.intake_date || "";
 
 
-  document
-    .getElementById("dogStatus")
-    .value =
-      currentDog.status || "intake";
+  const dogStatusSelect =
+    document.getElementById("dogStatus");
+
+  const currentStatus =
+    currentDog.status || "intake";
+
+  // Preserve valid database statuses even if an older record uses
+  // a value that is not currently listed in the form.
+  if (
+    currentStatus &&
+    !Array.from(dogStatusSelect.options)
+      .some(option => option.value === currentStatus)
+  ) {
+    const option = document.createElement("option");
+    option.value = currentStatus;
+    option.textContent =
+      currentStatus.replaceAll("_", " ").replace(/\\b\\w/g, c => c.toUpperCase());
+    dogStatusSelect.appendChild(option);
+  }
+
+  dogStatusSelect.value = currentStatus;
 
 
   document
@@ -2901,11 +2918,6 @@ async function saveDog(){
         .getElementById("dogIntakeDate")
         .value || null,
 
-    status:
-      document
-        .getElementById("dogStatus")
-        .value,
-
     notes:
       document
         .getElementById("dogNotes")
@@ -2914,6 +2926,15 @@ async function saveDog(){
 
   };
 
+
+  const selectedDogStatus =
+    document.getElementById("dogStatus").value;
+
+  if (selectedDogStatus) {
+    dogData.status = selectedDogStatus;
+  } else if (!editingDogId) {
+    dogData.status = "intake";
+  }
 
   /* ==========================================
      EDIT EXISTING DOG
